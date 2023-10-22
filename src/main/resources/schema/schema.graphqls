@@ -1,0 +1,131 @@
+# Scalars
+
+scalar Url
+@specifiedBy(url:
+"https://www.w3.org/Addressing/URL/url-spec.txt"
+)
+
+"""
+YYYY-MM-DD
+"""
+scalar Date
+@specifiedBy(url:
+"https://tools.ietf.org/html/rfc3339"
+)
+
+input DateRangeFilterInput {
+    from: Date!
+    to: Date!
+}
+
+# Queries and mutations
+
+type Query {
+    bikes(bikesFilterInput: BikesFilterInput): [Bike!]
+    #    """
+    #    Get the availability for a give bike for a given month (will default to the current month if not specified)
+    #    Will not return entries before the current day
+    #    """
+    #    availability(
+    #        bikeId: ID!,
+    #        """
+    #        Will default to the current month if not specified - what about year???
+    #        """
+    #        month: Month): [DayAvailability!]!
+}
+
+type Mutation {
+    """
+    @return the new bike if successful, null otherwise
+    """
+    createBike(createBikeInput: CreateBikeInput!): Bike
+    """
+    @return the updated bike if it exists, null otherwise
+    """
+    updateBike(updateBikeInput: UpdateBikeInput!): Bike
+    """
+    @return the ID of the deleted bike if it existed, null otherwise
+    """
+    deleteBike(deleteBikeInput: DeleteBikeInput!): ID
+}
+
+# Bikes
+
+type BikeBrand {
+    name: String!
+    models: [Model!]
+}
+
+type Model {
+    id: ID!
+    name: String!
+    modelYear: Int!
+    brand: BikeBrand!
+}
+
+type Bike {
+    id: ID!
+    model: Model!
+    size: String!
+    groupset: Groupset!
+    heroImageUrl: Url,
+}
+
+input BikesFilterInput {
+    """
+    If specified, return only bikes that are available in the provided date range
+    """
+    availableDateRangeFilter: DateRangeFilterInput
+}
+
+input CreateBikeInput {
+    modelId: ID!
+    groupsetName: String!
+    size: String!
+}
+
+input UpdateBikeInput {
+    bikeId: ID!
+    groupsetName: String
+    heroImageUrl: Url
+}
+
+input DeleteBikeInput {
+    bikeId: ID!
+}
+
+# Equipment
+
+enum GroupsetBrand {
+    SRAM
+    SHIMANO
+    CAMPAGNOLO
+}
+
+type Groupset {
+    name: String!
+    brand: GroupsetBrand!
+    isElectronic: Boolean!
+}
+
+# Availability
+
+enum Month {
+    JANUARY
+    FEBRUARY
+    MARCH
+    APRIL
+    MAY
+    JUNE
+    JULY
+    AUGUST
+    SEPTEMBER
+    OCTOBER
+    NOVEMBER
+    DECEMBER
+}
+
+type DayAvailability {
+    date: Date!,
+    isAvailable: Boolean!
+}
