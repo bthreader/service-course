@@ -11,7 +11,8 @@ import java.util.Optional;
 public class CreateBikeParams implements CrudBikeInput {
     private ModelEntity modelEntity;
     private GroupsetEntity groupsetEntity;
-    private Optional<URL> heroImageUrl;
+    private URL heroImageUrl;
+    private String size;
 
     @Override
     public Optional<ModelEntity> model() {
@@ -25,6 +26,9 @@ public class CreateBikeParams implements CrudBikeInput {
 
     @Override
     public Optional<URL> heroImageUrl() {
-        return heroImageUrl;
+        return Optional.of(heroImageUrl);
     }
+
+    @Override
+    public Optional<String> size() { return Optional.of(size); }
 }

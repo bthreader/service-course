@@ -1,9 +1,7 @@
 package servicecourse.repo;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import servicecourse.generated.types.Groupset;
 import servicecourse.generated.types.GroupsetBrand;
 
@@ -12,6 +10,8 @@ import servicecourse.generated.types.GroupsetBrand;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class GroupsetEntity {
     @Id
     private String name;

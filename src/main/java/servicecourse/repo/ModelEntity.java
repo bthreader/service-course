@@ -3,9 +3,7 @@ package servicecourse.repo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import servicecourse.generated.types.Model;
 import servicecourse.services.models.ModelId;
 
@@ -14,6 +12,8 @@ import servicecourse.services.models.ModelId;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class ModelEntity {
     @Id
     private Long id;

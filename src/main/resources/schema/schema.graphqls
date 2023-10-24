@@ -82,6 +82,7 @@ input CreateBikeInput {
     modelId: ID!
     groupsetName: String!
     size: String!
+    heroImageUrl: Url
 }
 
 input UpdateBikeInput {

@@ -39,6 +39,8 @@ public class RelationalBikesService implements BikesService {
         newBike.apply(CreateBikeParams.builder()
                               .modelEntity(modelEntity)
                               .groupsetEntity(groupsetEntity)
+                              .size(createBikeInput.getSize())
+                              .heroImageUrl(createBikeInput.getHeroImageUrl())
                               .build());
 
         return bikeRepository.save(newBike).asBike();

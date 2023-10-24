@@ -12,4 +12,6 @@ public interface CrudBikeInput {
     Optional<GroupsetEntity> groupset();
 
     Optional<URL> heroImageUrl();
+
+    Optional<String> size();
 }

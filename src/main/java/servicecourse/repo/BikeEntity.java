@@ -1,13 +1,13 @@
 package servicecourse.repo;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import servicecourse.generated.types.Bike;
 import servicecourse.services.bikes.BikeId;
 import servicecourse.services.bikes.CrudBikeInput;
+
+import java.net.URI;
+import java.net.URL;
 
 @Entity
 @Table(name = "bikes")
@@ -15,6 +15,8 @@ import servicecourse.services.bikes.CrudBikeInput;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class BikeEntity {
     @Id
     private Long id;
@@ -27,9 +29,9 @@ public class BikeEntity {
     @JoinColumn(name = "groupset_name")
     private GroupsetEntity groupset;
 
-//    // TODO another converter??
-//    @Convert(converter = URI.class)
-//    private URL heroImageUrl;
+    // TODO another converter??
+    @Convert(converter = URI.class)
+    private URL heroImageUrl;
 
     private String size;
 
@@ -38,7 +40,7 @@ public class BikeEntity {
                 .id(BikeId.serialize(id))
                 .model(model.asModel())
                 .groupset(groupset.asGroupset())
-                .heroImageUrl(null) // TODO fix the URI stuff
+                .heroImageUrl(heroImageUrl)
                 .size(size)
                 .build();
     }
@@ -46,6 +48,7 @@ public class BikeEntity {
     public void apply(CrudBikeInput crudBikeInput) {
         crudBikeInput.model().ifPresent(this::setModel);
         crudBikeInput.groupset().ifPresent(this::setGroupset);
-//        crudBikeInput.heroImageUrl().ifPresent(this::setHeroImageUrl);
+        crudBikeInput.heroImageUrl().ifPresent(this::setHeroImageUrl);
+        crudBikeInput.size().ifPresent(this::setSize);
     }
 }

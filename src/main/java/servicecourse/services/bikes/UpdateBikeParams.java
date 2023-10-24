@@ -22,8 +22,13 @@ public class UpdateBikeParams implements CrudBikeInput {
         return heroImageUrl;
     }
 
+    // Model and size cannot be updated, so always return empty
+
     @Override
     public Optional<ModelEntity> model() {
         return Optional.empty();
     }
+
+    @Override
+    public Optional<String> size() { return Optional.empty(); }
 }
