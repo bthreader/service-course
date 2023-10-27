@@ -4,6 +4,6 @@ import servicecourse.generated.types.Model;
 
 import java.util.List;
 
-public interface ModelService {
+public interface ModelsService {
     List<Model> findByBrandName(String brandName);
 }

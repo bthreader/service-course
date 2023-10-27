@@ -1,6 +1,7 @@
 package servicecourse.services.bikes;
 
 import lombok.Builder;
+import lombok.NonNull;
 import servicecourse.repo.GroupsetEntity;
 import servicecourse.repo.ModelEntity;
 
@@ -9,10 +10,13 @@ import java.util.Optional;
 
 @Builder
 public class CreateBikeParams implements CrudBikeInput {
+    @NonNull
     private ModelEntity modelEntity;
+    @NonNull
     private GroupsetEntity groupsetEntity;
-    private URL heroImageUrl;
+    @NonNull
     private String size;
+    private URL heroImageUrl;
 
     @Override
     public Optional<ModelEntity> model() {
@@ -26,7 +30,7 @@ public class CreateBikeParams implements CrudBikeInput {
 
     @Override
     public Optional<URL> heroImageUrl() {
-        return Optional.of(heroImageUrl);
+        return Optional.ofNullable(heroImageUrl);
     }
 
     @Override

@@ -200,7 +200,7 @@ public class RelationalBikesServiceTest {
                     .thenReturn(Optional.of(newGroupsetEntity));
 
             // Given a valid hero image url update
-            URL newHeroImageUrl = URLFactory.of("update").orElseThrow();
+            URL newHeroImageUrl = URLFactory.newUrlWithDomain("update").orElseThrow();
 
             // Given an UpdateBikeInput with those updates
             UpdateBikeInput updateBikeInput = UpdateBikeInput.newBuilder()

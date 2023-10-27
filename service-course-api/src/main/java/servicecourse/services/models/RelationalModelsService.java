@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class RelationalModelService implements ModelService {
+public class RelationalModelsService implements ModelsService {
     private final ModelRepository modelRepository;
 
     @Override

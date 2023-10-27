@@ -13,6 +13,8 @@ scalar Date
 "https://tools.ietf.org/html/rfc3339"
 )
 
+# Utils
+
 input DateRangeFilterInput {
     from: Date!
     to: Date!
@@ -21,39 +23,38 @@ input DateRangeFilterInput {
 # Queries and mutations
 
 type Query {
-    bikes(bikesFilterInput: BikesFilterInput): [Bike!]
-    #    """
-    #    Get the availability for a give bike for a given month (will default to the current month if not specified)
-    #    Will not return entries before the current day
-    #    """
-    #    availability(
-    #        bikeId: ID!,
-    #        """
-    #        Will default to the current month if not specified - what about year???
-    #        """
-    #        month: Month): [DayAvailability!]!
+    bikes(filter: BikesFilterInput): [Bike!]
+    """
+    Get the available days to book for a give bike for a given date range.
+
+    If no date range is specified, the default will be today -> last day of the current month
+    """
+    availableDays(
+        bikeId: ID!,
+        dateRangeFilterInput: DateRangeFilterInput): [Date!]
 }
 
 type Mutation {
-    """
-    @return the new bike if successful, null otherwise
-    """
-    createBike(createBikeInput: CreateBikeInput!): Bike
-    """
-    @return the updated bike if it exists, null otherwise
-    """
-    updateBike(updateBikeInput: UpdateBikeInput!): Bike
-    """
-    @return the ID of the deleted bike if it existed, null otherwise
-    """
-    deleteBike(deleteBikeInput: DeleteBikeInput!): ID
+    createBike(input: CreateBikeInput!): Bike
+    updateBike(input: UpdateBikeInput!): Bike
+    deleteBike(id: ID!): ID
+
+    createModel(input: CreateModelInput!): Model
+    deleteModel(id: ID!): ID
+
+    createBrand(input: CreateBikeBrandInput!): BikeBrand
+    deleteBikeBrand(name: String!): String
 }
 
-# Bikes
+# Models
 
 type BikeBrand {
     name: String!
     models: [Model!]
+}
+
+input CreateBikeBrandInput {
+    name: String!
 }
 
 type Model {
@@ -63,12 +64,20 @@ type Model {
     brand: BikeBrand!
 }
 
+input CreateModelInput {
+    name: String!
+    modelYear: Int!
+    brandName: String!
+}
+
+# Bikes
+
 type Bike {
     id: ID!
     model: Model!
     size: String!
     groupset: Groupset!
-    heroImageUrl: Url,
+    heroImageUrl: Url
 }
 
 input BikesFilterInput {
@@ -91,10 +100,6 @@ input UpdateBikeInput {
     heroImageUrl: Url
 }
 
-input DeleteBikeInput {
-    bikeId: ID!
-}
-
 # Equipment
 
 enum GroupsetBrand {
@@ -107,26 +112,4 @@ type Groupset {
     name: String!
     brand: GroupsetBrand!
     isElectronic: Boolean!
-}
-
-# Availability
-
-enum Month {
-    JANUARY
-    FEBRUARY
-    MARCH
-    APRIL
-    MAY
-    JUNE
-    JULY
-    AUGUST
-    SEPTEMBER
-    OCTOBER
-    NOVEMBER
-    DECEMBER
-}
-
-type DayAvailability {
-    date: Date!,
-    isAvailable: Boolean!
 }

@@ -15,21 +15,26 @@ import java.util.List;
 
 @DgsComponent
 @RequiredArgsConstructor
-public class BikesDataFetcher {
+public class BikeDataFetcher {
     private final BikesService bikesService;
 
     @DgsQuery
-    public List<Bike> bikes(@InputArgument BikesFilterInput bikesFilterInput) {
-        return bikesService.bikes(bikesFilterInput);
+    public List<Bike> bikes(@InputArgument BikesFilterInput filter) {
+        return bikesService.bikes(filter);
     }
 
     @DgsMutation
-    public Bike createBike(@InputArgument CreateBikeInput createBikeInput) {
-        return null;
+    public Bike createBike(@InputArgument CreateBikeInput input) {
+        return bikesService.createBike(input);
     }
 
     @DgsMutation
-    public Bike updateBike(@InputArgument UpdateBikeInput updateBikeInput) {
-        return bikesService.updateBike(updateBikeInput);
+    public Bike updateBike(@InputArgument UpdateBikeInput input) {
+        return bikesService.updateBike(input);
+    }
+
+    @DgsMutation
+    public String deleteBike(@InputArgument String id) {
+        return bikesService.deleteBike(id).toString();
     }
 }

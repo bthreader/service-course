@@ -6,7 +6,6 @@ import servicecourse.generated.types.Bike;
 import servicecourse.services.bikes.BikeId;
 import servicecourse.services.bikes.CrudBikeInput;
 
-import java.net.URI;
 import java.net.URL;
 
 @Entity
@@ -20,6 +19,7 @@ import java.net.URL;
 @EqualsAndHashCode
 public class BikeEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -30,8 +30,7 @@ public class BikeEntity {
     @JoinColumn(name = "groupset_name")
     private GroupsetEntity groupset;
 
-    // TODO another converter??
-    @Convert(converter = URI.class)
+    @Convert(converter = URLConverter.class)
     private URL heroImageUrl;
 
     private String size;

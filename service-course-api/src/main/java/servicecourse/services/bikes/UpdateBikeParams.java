@@ -10,7 +10,7 @@ import java.util.Optional;
 @Builder
 public class UpdateBikeParams implements CrudBikeInput {
     private Optional<GroupsetEntity> groupset;
-    private Optional<URL> heroImageUrl;
+    private URL heroImageUrl;
 
     @Override
     public Optional<GroupsetEntity> groupset() {
@@ -19,7 +19,7 @@ public class UpdateBikeParams implements CrudBikeInput {
 
     @Override
     public Optional<URL> heroImageUrl() {
-        return heroImageUrl;
+        return Optional.ofNullable(heroImageUrl);
     }
 
     // Model and size cannot be updated, so always return empty

@@ -10,7 +10,7 @@ public class URLFactory {
      * want null in the signature. Simply unpack with .orElseThrow :)
      */
     public static Optional<URL> newUrl() {
-        return of("mock");
+        return newUrlWithDomain("mock");
     }
 
     /**
@@ -19,7 +19,7 @@ public class URLFactory {
      *
      * @return https://domain.com
      */
-    public static Optional<URL> of(String domain) {
+    public static Optional<URL> newUrlWithDomain(String domain) {
         try {
             return Optional.of(new URL("https://" + domain + ".com"));
         } catch (MalformedURLException e) {

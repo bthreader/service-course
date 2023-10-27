@@ -2,7 +2,10 @@ package servicecourse.services.bikes;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import servicecourse.generated.types.*;
+import servicecourse.generated.types.Bike;
+import servicecourse.generated.types.BikesFilterInput;
+import servicecourse.generated.types.CreateBikeInput;
+import servicecourse.generated.types.UpdateBikeInput;
 import servicecourse.repo.*;
 import servicecourse.services.models.ModelId;
 
@@ -51,7 +54,7 @@ public class RelationalBikesService implements BikesService {
         return bikeRepository
                 .findById(BikeId.deserialize(updateBikeInput.getBikeId()))
                 .map((entity) -> {
-                    // Pull up the groupset, if it exists
+                    // Pull up the groupset, if it has been specified
                     Optional<GroupsetEntity> groupsetEntity = Optional.ofNullable(updateBikeInput.getGroupsetName())
                             .flatMap(name -> {
                                 Optional<GroupsetEntity> result = groupsetRespository.findById(name);
@@ -67,7 +70,7 @@ public class RelationalBikesService implements BikesService {
                     // Apply the input
                     entity.apply(UpdateBikeParams.builder()
                                          .groupset(groupsetEntity)
-                                         .heroImageUrl(Optional.ofNullable(updateBikeInput.getHeroImageUrl()))
+                                         .heroImageUrl(updateBikeInput.getHeroImageUrl())
                                          .build());
 
                     // Save if there is an update
@@ -81,14 +84,12 @@ public class RelationalBikesService implements BikesService {
     }
 
     @Override
-    public Optional<Long> deleteBike(DeleteBikeInput deleteBikeInput) {
-        Long id = BikeId.deserialize(deleteBikeInput.getBikeId());
-
-        if (bikeRepository.findById(id).isPresent()) {
-            bikeRepository.deleteById(id);
-            return Optional.of(id);
-        }
-
-        return Optional.empty();
+    public Long deleteBike(String id) {
+        return bikeRepository.findById(BikeId.deserialize(id))
+                .map((entity) -> {
+                    bikeRepository.deleteById(entity.getId());
+                    return entity.getId();
+                })
+                .orElseThrow();
     }
 }
