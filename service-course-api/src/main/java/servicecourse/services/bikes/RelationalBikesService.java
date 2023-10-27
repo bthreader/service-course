@@ -47,20 +47,20 @@ public class RelationalBikesService implements BikesService {
     }
 
     @Override
-    public Optional<Bike> updateBike(UpdateBikeInput updateBikeInput) {
-        // Pull up the groupset, if it exists
-        Optional<GroupsetEntity> groupsetEntity = Optional.ofNullable(updateBikeInput.getGroupsetName())
-                .flatMap(name -> {
-                    Optional<GroupsetEntity> result = groupsetRespository.findById(name);
-                    if (result.isEmpty()) {
-                        throw new NoSuchElementException("Groupset ID not found");
-                    }
-                    return result;
-                });
-
+    public Bike updateBike(UpdateBikeInput updateBikeInput) {
         return bikeRepository
                 .findById(BikeId.deserialize(updateBikeInput.getBikeId()))
                 .map((entity) -> {
+                    // Pull up the groupset, if it exists
+                    Optional<GroupsetEntity> groupsetEntity = Optional.ofNullable(updateBikeInput.getGroupsetName())
+                            .flatMap(name -> {
+                                Optional<GroupsetEntity> result = groupsetRespository.findById(name);
+                                if (result.isEmpty()) {
+                                    throw new NoSuchElementException("Groupset not found");
+                                }
+                                return result;
+                            });
+
                     // Store a copy of the old version of the bike
                     Bike oldBike = entity.asBike();
 
@@ -76,7 +76,8 @@ public class RelationalBikesService implements BikesService {
                     }
 
                     return entity.asBike();
-                });
+                })
+                .orElseThrow(() -> new NoSuchElementException("Bike not found"));
     }
 
     @Override

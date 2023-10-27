@@ -7,6 +7,7 @@ import servicecourse.generated.types.GroupsetBrand;
 
 @Entity
 @Table(name = "groupsets")
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

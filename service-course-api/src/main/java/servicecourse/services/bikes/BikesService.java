@@ -12,7 +12,7 @@ public interface BikesService {
     Bike createBike(CreateBikeInput createBikeInput);
 
     /** @return the updated bike if it exists, empty otherwise */
-    Optional<Bike> updateBike(UpdateBikeInput updateBikeInput);
+    Bike updateBike(UpdateBikeInput updateBikeInput);
 
     /** @return the ID of the deleted bike if it existed, empty otherwise */
     Optional<Long> deleteBike(DeleteBikeInput deleteBikeInput);

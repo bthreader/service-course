@@ -11,6 +11,7 @@ import java.net.URL;
 
 @Entity
 @Table(name = "bikes")
+@Getter
 @Setter
 @Builder
 @NoArgsConstructor
