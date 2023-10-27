@@ -56,13 +56,11 @@ public class RelationalBikesServiceTest {
     class createBike {
         @Test
         void model_entity_not_found() {
-            // Given
+            // Given a model id that doesn't exist
             Long ghostModelId = 1L;
-
-            // When no model is returned from the repository
             when(mockModelRepository.findById(ghostModelId)).thenReturn(Optional.empty());
 
-            // Then the lack of model should create an error
+            // Then when trying to create a bike with that model, createBike should throw
             assertThrows(NoSuchElementException.class,
                          () -> relationalBikesService.createBike(CreateBikeInput.newBuilder()
                                                                          .modelId(ghostModelId.toString())
@@ -76,19 +74,19 @@ public class RelationalBikesServiceTest {
 
         @Test
         void groupset_entity_not_found() {
-            // Given
+            // Given a groupset name which doesn't exist
             String ghostGroupsetName = "ghost";
-            Long mockModelId = 1L;
-
-            // When no groupset is returned from the repository, but a model is
             when(mockGroupsetRepository.findById(ghostGroupsetName)).thenReturn(Optional.empty());
-            when(mockModelRepository.findById(mockModelId))
+
+            // Given a model id which does exist
+            Long modelId = 1L;
+            when(mockModelRepository.findById(modelId))
                     .thenReturn(Optional.of(EntityFactory.newModelEntity()));
 
             // Then the lack of groupset should create an error
             assertThrows(NoSuchElementException.class,
                          () -> relationalBikesService.createBike(CreateBikeInput.newBuilder()
-                                                                         .modelId(mockModelId.toString())
+                                                                         .modelId(modelId.toString())
                                                                          .groupsetName(
                                                                                  ghostGroupsetName)
                                                                          .size("Medium")
@@ -100,12 +98,12 @@ public class RelationalBikesServiceTest {
 
         @Test
         void successful_save() {
-            // Given a "valid" model
+            // Given a model id which exists
             Long mockModelId = 1L;
             ModelEntity mockModelEntity = EntityFactory.newModelEntity();
             when(mockModelRepository.findById(mockModelId)).thenReturn(Optional.of(mockModelEntity));
 
-            // Given a "valid" groupset
+            // Given a groupset name which exists
             String mockGroupsetName = "name";
             GroupsetEntity mockGroupsetEntity = EntityFactory.newGroupsetEntity();
             when(mockGroupsetRepository.findById(mockGroupsetName)).thenReturn(Optional.of(
@@ -193,7 +191,7 @@ public class RelationalBikesServiceTest {
             BikeEntity oldBikeEntity = EntityFactory.newBikeEntityWithId(bikeId);
             when(mockBikeRepository.findById(bikeId)).thenReturn(Optional.of(oldBikeEntity));
 
-            // Given a groupset update, where the groupset exists
+            // Given a groupset name update, where the that new groupset exists
             String groupsetName = "update";
             GroupsetEntity newGroupsetEntity = EntityFactory.newGroupsetEntityWithName("update");
             when(mockGroupsetRepository.findById(groupsetName))
@@ -219,10 +217,10 @@ public class RelationalBikesServiceTest {
                     .build();
 
             // When we call the updateBike method
+            Bike result = relationalBikesService.updateBike(updateBikeInput);
 
             // Then we should get back the bike we expected
-            assertThat(relationalBikesService.updateBike(updateBikeInput)).isEqualTo(
-                    expectedNewBikeEntity.asBike());
+            assertThat(result).isEqualTo(expectedNewBikeEntity.asBike());
 
             // Then the bike repo should have been asked to save the expected bike entity
             verify(mockBikeRepository).save(expectedNewBikeEntity);
