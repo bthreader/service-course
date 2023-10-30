@@ -7,10 +7,10 @@ import servicecourse.generated.types.BikesFilterInput;
 import servicecourse.generated.types.CreateBikeInput;
 import servicecourse.generated.types.UpdateBikeInput;
 import servicecourse.repo.*;
+import servicecourse.services.Errors;
 import servicecourse.services.models.ModelId;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,7 +22,7 @@ public class RelationalBikesService implements BikesService {
     private final GroupsetRespository groupsetRespository;
 
     @Override
-    public List<Bike> bikes(BikesFilterInput bikesFilterInput) {
+    public List<Bike> bikes(BikesFilterInput filter) {
         // TODO filtering based on the filter input
 
         return bikeRepository.findAll()
@@ -32,34 +32,34 @@ public class RelationalBikesService implements BikesService {
     }
 
     @Override
-    public Bike createBike(CreateBikeInput createBikeInput) {
-        ModelEntity modelEntity = modelRepository.findById(ModelId.deserialize(createBikeInput.getModelId()))
-                .orElseThrow(() -> new NoSuchElementException("Model ID not found"));
-        GroupsetEntity groupsetEntity = groupsetRespository.findById(createBikeInput.getGroupsetName())
-                .orElseThrow(() -> new NoSuchElementException("Groupset not found"));
+    public Bike createBike(CreateBikeInput input) {
+        ModelEntity modelEntity = modelRepository.findById(ModelId.deserialize(input.getModelId()))
+                .orElseThrow(Errors::newModelNotFoundError);
+        GroupsetEntity groupsetEntity = groupsetRespository.findById(input.getGroupsetName())
+                .orElseThrow(Errors::newGroupsetNotFoundError);
 
         BikeEntity newBike = new BikeEntity();
         newBike.apply(CreateBikeParams.builder()
                               .modelEntity(modelEntity)
                               .groupsetEntity(groupsetEntity)
-                              .size(createBikeInput.getSize())
-                              .heroImageUrl(createBikeInput.getHeroImageUrl())
+                              .size(input.getSize())
+                              .heroImageUrl(input.getHeroImageUrl())
                               .build());
 
         return bikeRepository.save(newBike).asBike();
     }
 
     @Override
-    public Bike updateBike(UpdateBikeInput updateBikeInput) {
+    public Bike updateBike(UpdateBikeInput input) {
         return bikeRepository
-                .findById(BikeId.deserialize(updateBikeInput.getBikeId()))
+                .findById(BikeId.deserialize(input.getBikeId()))
                 .map((entity) -> {
                     // Pull up the groupset, if it has been specified
-                    Optional<GroupsetEntity> groupsetEntity = Optional.ofNullable(updateBikeInput.getGroupsetName())
+                    Optional<GroupsetEntity> groupsetEntity = Optional.ofNullable(input.getGroupsetName())
                             .flatMap(name -> {
                                 Optional<GroupsetEntity> result = groupsetRespository.findById(name);
                                 if (result.isEmpty()) {
-                                    throw new NoSuchElementException("Groupset not found");
+                                    throw Errors.newGroupsetNotFoundError();
                                 }
                                 return result;
                             });
@@ -70,7 +70,7 @@ public class RelationalBikesService implements BikesService {
                     // Apply the input
                     entity.apply(UpdateBikeParams.builder()
                                          .groupset(groupsetEntity)
-                                         .heroImageUrl(updateBikeInput.getHeroImageUrl())
+                                         .heroImageUrl(input.getHeroImageUrl())
                                          .build());
 
                     // Save if there is an update
@@ -80,7 +80,7 @@ public class RelationalBikesService implements BikesService {
 
                     return entity.asBike();
                 })
-                .orElseThrow(() -> new NoSuchElementException("Bike not found"));
+                .orElseThrow(Errors::newBikeNotFoundError);
     }
 
     @Override
@@ -90,6 +90,6 @@ public class RelationalBikesService implements BikesService {
                     bikeRepository.deleteById(entity.getId());
                     return entity.getId();
                 })
-                .orElseThrow();
+                .orElseThrow(Errors::newBikeNotFoundError);
     }
 }

@@ -8,13 +8,13 @@ import servicecourse.generated.types.UpdateBikeInput;
 import java.util.List;
 
 public interface BikesService {
-    List<Bike> bikes(BikesFilterInput bikesFilterInput);
+    List<Bike> bikes(BikesFilterInput filter);
 
     /** @return the newly persisted bike if successful, throws otherwise */
-    Bike createBike(CreateBikeInput createBikeInput);
+    Bike createBike(CreateBikeInput input);
 
     /** @return the updated bike if successful, throws otherwise */
-    Bike updateBike(UpdateBikeInput updateBikeInput);
+    Bike updateBike(UpdateBikeInput input);
 
     /** @return the ID of the deleted bike if it existed, throws otherwise */
     Long deleteBike(String id);

@@ -9,6 +9,7 @@ import servicecourse.services.models.ModelId;
 @Entity
 @Table(name = "models")
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
