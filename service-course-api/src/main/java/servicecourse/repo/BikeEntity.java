@@ -45,10 +45,10 @@ public class BikeEntity {
                 .build();
     }
 
-    public void apply(CrudBikeInput crudBikeInput) {
-        crudBikeInput.model().ifPresent(this::setModel);
-        crudBikeInput.groupset().ifPresent(this::setGroupset);
-        crudBikeInput.heroImageUrl().ifPresent(this::setHeroImageUrl);
-        crudBikeInput.size().ifPresent(this::setSize);
+    public void apply(CrudBikeInput input) {
+        input.model().ifPresent(this::setModel);
+        input.groupset().ifPresent(this::setGroupset);
+        input.heroImageUrl().ifPresent(this::setHeroImageUrl);
+        input.size().ifPresent(this::setSize);
     }
 }

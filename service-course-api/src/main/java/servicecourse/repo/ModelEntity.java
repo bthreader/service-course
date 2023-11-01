@@ -20,6 +20,8 @@ public class ModelEntity {
     private Long id;
     private String name;
     private int modelYear;
+
+    @ManyToOne
     private String brandName;
 
     /**

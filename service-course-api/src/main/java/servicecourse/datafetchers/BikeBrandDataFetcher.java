@@ -16,9 +16,8 @@ public class BikeBrandDataFetcher {
     private final ModelsService modelsService;
 
     /**
-     * The {@code name} attribute will already be populated by the queries that return
-     * {@code BikeBrand}. However, these queries won't load models related to the brand, so we need
-     * to resolve this separately.
+     * This is an enhanced attribute. Services will not generate it ahead of time, unlike brand
+     * name.
      */
     @DgsData(parentType = "BikeBrand", field = "models")
     public List<Model> models(DgsDataFetchingEnvironment dfe) {

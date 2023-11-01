@@ -14,4 +14,8 @@ public class Errors {
     public static RuntimeException newBikeNotFoundError() {
         return new NoSuchElementException("Bike not found");
     }
+
+    public static RuntimeException newBikeBrandNotFoundError() {
+        return new NoSuchElementException("Bike brand not found");
+    }
 }

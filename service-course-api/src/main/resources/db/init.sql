@@ -2,13 +2,21 @@ DROP TABLE IF EXISTS bikes;
 DROP TABLE IF EXISTS models;
 DROP TABLE IF EXISTS groupsets;
 
+-- Bike brands
+
+CREATE TABLE bike_brands (
+    name varchar(80) NOT NULL,
+)
+
+CREATE INDEX bike_brand_name ON bike_brands(name);
+
 -- Models
 
 CREATE TABLE models (
     id serial primary key,
     name varchar(80) NOT NULL,
     model_year int NOT NULL,
-    brand_name varchar(80) NOT NULL
+    brand_name varchar(80) NOT NULL references bike_brands(name)
 );
 
 INSERT INTO models (id, name, model_year, brand_name)

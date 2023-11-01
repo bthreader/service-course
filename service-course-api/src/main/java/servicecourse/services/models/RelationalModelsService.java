@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import servicecourse.generated.types.CreateModelInput;
 import servicecourse.generated.types.Model;
+import servicecourse.repo.BikeBrandRepository;
 import servicecourse.repo.ModelEntity;
 import servicecourse.repo.ModelRepository;
 import servicecourse.services.Errors;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RelationalModelsService implements ModelsService {
     private final ModelRepository modelRepository;
+    private final BikeBrandRepository bikeBrandRepository;
 
     @Override
     public List<Model> findByBrandName(String brandName) {
@@ -27,8 +29,10 @@ public class RelationalModelsService implements ModelsService {
     @Override
     public Model createModel(CreateModelInput input) {
         // Validate the brand already exists
+        bikeBrandRepository.findById(input.getBrandName())
+                .orElseThrow(Errors::newBikeBrandNotFoundError);
 
-        // Validate the name is not already taken for that brand
+        // TODO Write an apply method with @notnulls
 
         return null;
     }
