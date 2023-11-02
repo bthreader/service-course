@@ -6,7 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import servicecourse.generated.types.CreateModelInput;
+import servicecourse.generated.types.Model;
+import servicecourse.repo.BikeBrandEntity;
 import servicecourse.repo.BikeBrandRepository;
+import servicecourse.repo.ModelEntity;
 import servicecourse.repo.ModelRepository;
 import servicecourse.services.EntityFactory;
 
@@ -33,6 +37,65 @@ public class RelationalModelsServiceTest {
     }
 
     @Nested
+    class createModel {
+        @Test
+        void fail_because_no_bike_brand() {
+            // Given a bike brand which doesn't exist
+            String ghostBikeBrandName = "ghost";
+            when(mockBikeBrandRepository.findById(ghostBikeBrandName)).thenReturn(Optional.empty());
+
+            // Given an otherwise valid input with that bike brand
+            CreateModelInput input = CreateModelInput.newBuilder()
+                    .name("name")
+                    .modelYear(2020)
+                    .brandName(ghostBikeBrandName)
+                    .build();
+
+            // When we call the createModel method with that bike brand
+            // Then the method should throw
+            assertThrows(NoSuchElementException.class,
+                         () -> relationalModelsService.createModel(input));
+        }
+
+        @Test
+        void success() {
+            // Given a bike brand which exists
+            String bikeBrandName = "Specialized";
+            when(mockBikeBrandRepository.findById(bikeBrandName)).thenReturn(Optional.of(
+                    BikeBrandEntity.ofName(bikeBrandName)));
+
+            // Given some other inputs
+            String name = "name";
+            int modelYear = 2020;
+
+            // Given an input with that bike brand
+            CreateModelInput input = CreateModelInput.newBuilder()
+                    .name(name)
+                    .modelYear(modelYear)
+                    .brandName(bikeBrandName)
+                    .build();
+
+            // Given some expected entities (pre and post save)
+            ModelEntity.ModelEntityBuilder baseModelEntityBuilder = ModelEntity.builder()
+                    .brandName(bikeBrandName)
+                    .modelYear(modelYear)
+                    .name(name);
+            ModelEntity expectedUnsavedModelEntity = baseModelEntityBuilder.id(null).build();
+            ModelEntity expectedSavedModelEntity = baseModelEntityBuilder.id(1L).build();
+
+            // When the model repository works as expected
+            when(mockModelRepository.save(expectedUnsavedModelEntity))
+                    .thenReturn(expectedSavedModelEntity);
+
+            // When we call the createModel method with that input
+            Model result = relationalModelsService.createModel(input);
+
+            // Then we should have received the expected Model object
+            assertThat(result).isEqualTo(expectedSavedModelEntity.asModel());
+        }
+    }
+
+    @Nested
     class deleteModel {
         @Test
         void fail_because_no_model() {
@@ -54,13 +117,13 @@ public class RelationalModelsServiceTest {
                     .thenReturn(Optional.of(EntityFactory.newModelEntityWithId(modelId)));
 
             // When we call the deleteModel method with that id
-            Long result = relationalModelsService.deleteModel(ModelId.serialize(modelId));
+            String result = relationalModelsService.deleteModel(ModelId.serialize(modelId));
 
             // Then the repository should have been asked to delete the model
             verify(mockModelRepository).deleteById(modelId);
 
             // Then we should receive the id of the deleted model back
-            assertThat(result).isEqualTo(modelId);
+            assertThat(result).isEqualTo(ModelId.serialize(modelId));
         }
     }
 }

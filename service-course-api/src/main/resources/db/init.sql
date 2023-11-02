@@ -5,10 +5,11 @@ DROP TABLE IF EXISTS groupsets;
 -- Bike brands
 
 CREATE TABLE bike_brands (
-    name varchar(80) NOT NULL,
-)
+    name varchar(80) NOT NULL unique
+);
 
-CREATE INDEX bike_brand_name ON bike_brands(name);
+INSERT INTO bike_brands (name)
+VALUES ('Specialized');
 
 -- Models
 

@@ -24,14 +24,15 @@ input DateRangeFilterInput {
 
 type Query {
     bikes(filter: BikesFilterInput): [Bike!]
-    """
-    Get the available days to book for a give bike for a given date range.
-
-    If no date range is specified, the default will be today -> last day of the current month
-    """
-    availableDays(
-        bikeId: ID!,
-        dateRangeFilterInput: DateRangeFilterInput): [Date!]
+    bikeBrands: [BikeBrand!]!
+    #    """
+    #    Get the available days to book for a give bike for a given date range.
+    #
+    #    If no date range is specified, the default will be today -> last day of the current month
+    #    """
+    # availableDays(
+    #    bikeId: ID!,
+    #    dateRangeFilterInput: DateRangeFilterInput): [Date!]
 }
 
 type Mutation {
@@ -42,7 +43,7 @@ type Mutation {
     createModel(input: CreateModelInput!): Model
     deleteModel(id: ID!): ID
 
-    createBrand(input: CreateBikeBrandInput!): BikeBrand
+    createBikeBrand(input: CreateBikeBrandInput!): BikeBrand
     deleteBikeBrand(name: String!): String
 }
 

@@ -2,6 +2,7 @@ package servicecourse.services.models;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import servicecourse.generated.types.BikeBrand;
 import servicecourse.generated.types.CreateModelInput;
 import servicecourse.generated.types.Model;
 import servicecourse.repo.BikeBrandRepository;
@@ -9,7 +10,9 @@ import servicecourse.repo.ModelEntity;
 import servicecourse.repo.ModelRepository;
 import servicecourse.services.Errors;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,19 +35,34 @@ public class RelationalModelsService implements ModelsService {
         bikeBrandRepository.findById(input.getBrandName())
                 .orElseThrow(Errors::newBikeBrandNotFoundError);
 
-        // TODO Write an apply method with @notnulls
+        ModelEntity newModel = ModelEntity.builder()
+                .name(input.getName())
+                .modelYear(input.getModelYear())
+                .brandName(input.getBrandName())
+                .build();
 
-        return null;
+        return modelRepository.save(newModel).asModel();
     }
 
     @Override
-    public Long deleteModel(String id) {
+    public String deleteModel(String id) {
         return modelRepository.findById(ModelId.deserialize(id))
                 .map((entity) -> {
                     modelRepository.deleteById(entity.getId());
-                    return entity.getId();
+                    return ModelId.serialize(entity.getId());
                 })
                 .orElseThrow(Errors::newModelNotFoundError);
+    }
+
+    public Map<String, List<Model>> modelsForBikeBrands(List<String> brandNames) {
+        Map<String, List<Model>> result = new HashMap<>();
+        result.put("hello", List.of(Model.newBuilder()
+                                            .name("hello")
+                                            .brand(BikeBrand.newBuilder()
+                                                           .name("hello").build())
+                                            .modelYear(2022)
+                                            .build()));
+        return result;
     }
 }
 

@@ -18,4 +18,8 @@ public class Errors {
     public static RuntimeException newBikeBrandNotFoundError() {
         return new NoSuchElementException("Bike brand not found");
     }
+
+    public static RuntimeException newBikeBrandAlreadyExistsError() {
+        return new IllegalArgumentException("Bike brand already exists");
+    }
 }

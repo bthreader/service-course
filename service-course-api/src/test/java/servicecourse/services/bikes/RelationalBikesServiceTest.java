@@ -20,7 +20,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RelationalBikesServiceTest {
@@ -121,7 +122,8 @@ public class RelationalBikesServiceTest {
             BikeEntity expectedSavedBikeEntity = baseBikeEntityBuilder.id(1L).build();
 
             // When the bike repository works as expected
-            when(mockBikeRepository.save(any())).thenReturn(expectedSavedBikeEntity);
+            when(mockBikeRepository.save(expectedUnsavedBikeEntity))
+                    .thenReturn(expectedSavedBikeEntity);
 
             // When we call the createBike method
             Bike result = relationalBikesService.createBike(CreateBikeInput.newBuilder()
@@ -131,9 +133,6 @@ public class RelationalBikesServiceTest {
                                                                             mockModelId))
                                                                     .heroImageUrl(mockUrl)
                                                                     .build());
-
-            // Then the bike repository should have been asked to save the expected BikeEntity
-            verify(mockBikeRepository).save(expectedUnsavedBikeEntity);
 
             // Then we should have received the expected Bike object
             assertThat(result).isEqualTo(expectedSavedBikeEntity.asBike());

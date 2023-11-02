@@ -15,7 +15,7 @@ import java.util.List;
 
 @DgsComponent
 @RequiredArgsConstructor
-public class BikeDataFetcher {
+public class BikesDataFetcher {
     private final BikesService bikesService;
 
     @DgsQuery
