@@ -2,33 +2,32 @@ package servicecourse.datafetchers;
 
 import com.netflix.graphql.dgs.*;
 import lombok.RequiredArgsConstructor;
+import org.dataloader.DataLoader;
 import servicecourse.generated.types.BikeBrand;
 import servicecourse.generated.types.CreateBikeBrandInput;
 import servicecourse.generated.types.Model;
 import servicecourse.services.bikebrands.BikeBrandsService;
-import servicecourse.services.models.ModelsService;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @DgsComponent
 @RequiredArgsConstructor
 public class BikeBrandsDataFetcher {
-    private final ModelsService modelsService;
     private final BikeBrandsService bikeBrandsService;
 
     /**
-     * This is an enhanced attribute. Services will not generate it ahead of time, unlike brand
-     * name. Therefore, if specified, it must be computed here.
+     * This is an enhanced attribute. Services will not generate it ahead of time (unlike brand
+     * name). Therefore, if specified by the user, it must be computed here.
+     * <p>
+     * A data loader is used to avoid sending multiple separate requests to the models service when
+     * handling a request that involves multiple bike brands (see {@link #bikeBrands()}).
      */
     @DgsData(parentType = "BikeBrand", field = "models")
-    public List<Model> models(DgsDataFetchingEnvironment dfe) {
+    public CompletableFuture<List<Model>> models(DgsDataFetchingEnvironment dfe) {
         BikeBrand bikeBrand = dfe.getSource();
-        // Data loader here
-        // Why?
-        // Because if some wind up merchant decides to ask for models on all bike brands
-        // after running bikeBrands query
-        // Models service will get pinged N+1 times
-        return modelsService.findByBrandName(bikeBrand.getName());
+        DataLoader<String, List<Model>> modelsDataLoader = dfe.getDataLoader("models");
+        return modelsDataLoader.load(bikeBrand.getName());
     }
 
     @DgsQuery

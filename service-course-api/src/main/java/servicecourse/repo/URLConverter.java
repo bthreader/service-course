@@ -5,6 +5,7 @@ import jakarta.persistence.AttributeConverter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/** Converts a potentially null URL */
 public class URLConverter implements AttributeConverter<URL, String> {
     @Override
     public String convertToDatabaseColumn(URL url) {

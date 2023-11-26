@@ -8,5 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ModelRepository extends JpaRepository<ModelEntity, Long>, JpaSpecificationExecutor<ModelEntity> {
-    List<ModelEntity> findAllByBrandName(String brandName);
+    List<ModelEntity> findByBrandName(String brandName);
+
+    List<ModelEntity> findByBrandNameIn(List<String> brandNames);
 }

@@ -15,15 +15,40 @@ scalar Date
 
 # Utils
 
+enum Op {
+    OR
+    AND
+}
+
 input DateRangeFilterInput {
     from: Date!
     to: Date!
 }
 
+"""
+Fields are combined with OR logic
+"""
+input StringFilterInput {
+    contains: String
+    in: [String!]
+    equals: String
+}
+
+input IntegerFilterInput {
+    lessThanOrEqualTo: Int
+    greaterThanOrEqualTo: Int
+    equals: Int
+    in: [Int!]
+    operator: Op
+}
+
 # Queries and mutations
 
 type Query {
-    bikes(filter: BikesFilterInput): [Bike!]
+    bikes(filter: BikesFilterInput): [Bike!]!
+    """
+    All bike brands
+    """
     bikeBrands: [BikeBrand!]!
     #    """
     #    Get the available days to book for a give bike for a given date range.
@@ -47,7 +72,7 @@ type Mutation {
     deleteBikeBrand(name: String!): String
 }
 
-# Models
+# Bike brands
 
 type BikeBrand {
     name: String!
@@ -57,6 +82,8 @@ type BikeBrand {
 input CreateBikeBrandInput {
     name: String!
 }
+
+# Models
 
 type Model {
     id: ID!
@@ -69,6 +96,15 @@ input CreateModelInput {
     name: String!
     modelYear: Int!
     brandName: String!
+}
+
+"""
+Fields are combined with AND logic
+"""
+input ModelFilterInput {
+    name: StringFilterInput
+    modelYear: IntegerFilterInput
+    brandName: String
 }
 
 # Bikes
@@ -85,11 +121,23 @@ input BikesFilterInput {
     """
     If specified, return only bikes that are available in the provided date range
     """
-    availableDateRangeFilter: DateRangeFilterInput
+    availableDateRange: DateRangeFilterInput
+    """
+    If specified, return only bikes whose model matches the criteria
+    """
+    model: ModelFilterInput
+    """
+    If specified, return only bikes with a groupset matching the criteria
+    """
+    groupset: GroupsetFilterInput
+    size: StringFilterInput
 }
 
 input CreateBikeInput {
     modelId: ID!
+    """
+    There must be a groupset with this name already saved otherwise the mutation will fail
+    """
     groupsetName: String!
     size: String!
     heroImageUrl: Url
@@ -97,6 +145,9 @@ input CreateBikeInput {
 
 input UpdateBikeInput {
     bikeId: ID!
+    """
+    IF specified, there must be a groupset with this name already saved otherwise the mutation will fail
+    """
     groupsetName: String
     heroImageUrl: Url
 }
@@ -113,4 +164,13 @@ type Groupset {
     name: String!
     brand: GroupsetBrand!
     isElectronic: Boolean!
+}
+
+"""
+Fields are combined with AND logic
+"""
+input GroupsetFilterInput {
+    name: String
+    brand: GroupsetBrand
+    isElectronic: Boolean
 }

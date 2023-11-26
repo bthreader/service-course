@@ -24,20 +24,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RelationalBikesServiceTest {
+public class BikesServiceImplTest {
     @Mock
     BikeRepository mockBikeRepository;
     @Mock
     ModelRepository mockModelRepository;
     @Mock
     GroupsetRespository mockGroupsetRepository;
-    RelationalBikesService relationalBikesService;
+    BikesServiceImpl bikesService;
 
     @BeforeEach
     void beforeEach() {
-        relationalBikesService = new RelationalBikesService(mockBikeRepository,
-                                                            mockModelRepository,
-                                                            mockGroupsetRepository);
+        bikesService = new BikesServiceImpl(mockBikeRepository,
+                                            mockModelRepository,
+                                            mockGroupsetRepository);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class RelationalBikesServiceTest {
 
         // When
         when(mockBikeRepository.findAll()).thenReturn(List.of(result));
-        List<Bike> bikes = relationalBikesService.bikes(null);
+        List<Bike> bikes = bikesService.bikes(null);
 
         // Then
         assertThat(bikes).isEqualTo(List.of(result.asBike()));
@@ -64,12 +64,12 @@ public class RelationalBikesServiceTest {
             // When trying to create a bike with that model
             // Then createBike should throw
             assertThrows(NoSuchElementException.class,
-                         () -> relationalBikesService.createBike(CreateBikeInput.newBuilder()
-                                                                         .modelId(BikeId.serialize(
-                                                                                 ghostModelId))
-                                                                         .groupsetName("name")
-                                                                         .size("Medium")
-                                                                         .build()));
+                         () -> bikesService.createBike(CreateBikeInput.newBuilder()
+                                                               .modelId(BikeId.serialize(
+                                                                       ghostModelId))
+                                                               .groupsetName("name")
+                                                               .size("Medium")
+                                                               .build()));
         }
 
         @Test
@@ -86,13 +86,13 @@ public class RelationalBikesServiceTest {
             // When trying to create a bike with that groupset
             // Then createBike should throw
             assertThrows(NoSuchElementException.class,
-                         () -> relationalBikesService.createBike(CreateBikeInput.newBuilder()
-                                                                         .modelId(BikeId.serialize(
-                                                                                 modelId))
-                                                                         .groupsetName(
-                                                                                 ghostGroupsetName)
-                                                                         .size("Medium")
-                                                                         .build()));
+                         () -> bikesService.createBike(CreateBikeInput.newBuilder()
+                                                               .modelId(BikeId.serialize(
+                                                                       modelId))
+                                                               .groupsetName(
+                                                                       ghostGroupsetName)
+                                                               .size("Medium")
+                                                               .build()));
         }
 
         @Test
@@ -126,13 +126,13 @@ public class RelationalBikesServiceTest {
                     .thenReturn(expectedSavedBikeEntity);
 
             // When we call the createBike method
-            Bike result = relationalBikesService.createBike(CreateBikeInput.newBuilder()
-                                                                    .size(mockSize)
-                                                                    .groupsetName(mockGroupsetName)
-                                                                    .modelId(BikeId.serialize(
-                                                                            mockModelId))
-                                                                    .heroImageUrl(mockUrl)
-                                                                    .build());
+            Bike result = bikesService.createBike(CreateBikeInput.newBuilder()
+                                                          .size(mockSize)
+                                                          .groupsetName(mockGroupsetName)
+                                                          .modelId(BikeId.serialize(
+                                                                  mockModelId))
+                                                          .heroImageUrl(mockUrl)
+                                                          .build());
 
             // Then we should have received the expected Bike object
             assertThat(result).isEqualTo(expectedSavedBikeEntity.asBike());
@@ -155,7 +155,7 @@ public class RelationalBikesServiceTest {
             // When we call the updateBike method with this input
             // Then it should throw
             assertThrows(NoSuchElementException.class,
-                         () -> relationalBikesService.updateBike(input));
+                         () -> bikesService.updateBike(input));
         }
 
         @Test
@@ -179,7 +179,7 @@ public class RelationalBikesServiceTest {
             // When we call the updateBike method with this input
             // Then it should throw
             assertThrows(NoSuchElementException.class,
-                         () -> relationalBikesService.updateBike(input));
+                         () -> bikesService.updateBike(input));
         }
 
         @Test
@@ -215,7 +215,7 @@ public class RelationalBikesServiceTest {
                     .build();
 
             // When we call the updateBike method
-            Bike result = relationalBikesService.updateBike(input);
+            Bike result = bikesService.updateBike(input);
 
             // Then we should get back the bike we expected
             assertThat(result).isEqualTo(expectedNewBikeEntity.asBike());
@@ -236,7 +236,7 @@ public class RelationalBikesServiceTest {
             // When we call the deleteBike method with that id
             // Then the method should throw
             assertThrows(NoSuchElementException.class,
-                         () -> relationalBikesService.deleteBike(BikeId.serialize(ghostBikeId)));
+                         () -> bikesService.deleteBike(BikeId.serialize(ghostBikeId)));
         }
 
         @Test
@@ -247,7 +247,7 @@ public class RelationalBikesServiceTest {
                     .thenReturn(Optional.of(EntityFactory.newBikeEntityWithId(bikeId)));
 
             // When we call the deleteBike method with that id
-            Long result = relationalBikesService.deleteBike(BikeId.serialize(bikeId));
+            Long result = bikesService.deleteBike(BikeId.serialize(bikeId));
 
             // Then the repository should have been asked to delete the bike
             verify(mockBikeRepository).deleteById(bikeId);

@@ -20,14 +20,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RelationalBikeBrandsServiceTest {
+public class BikeBrandsServiceImplTest {
     @Mock
     BikeBrandRepository mockBikeBrandRepository;
-    RelationalBikeBrandsService relationalBikesBrandsService;
+    BikeBrandsServiceImpl bikeBrandsService;
 
     @BeforeEach
     void setup() {
-        relationalBikesBrandsService = new RelationalBikeBrandsService(mockBikeBrandRepository);
+        bikeBrandsService = new BikeBrandsServiceImpl(mockBikeBrandRepository);
     }
 
     @Nested
@@ -42,9 +42,9 @@ public class RelationalBikeBrandsServiceTest {
             // When we call the createBikeBrand method with that name
             // Then the method should throw
             assertThrows(IllegalArgumentException.class,
-                         () -> relationalBikesBrandsService.createBikeBrand(CreateBikeBrandInput.newBuilder()
-                                                                                    .name(bikeBrandName)
-                                                                                    .build()));
+                         () -> bikeBrandsService.createBikeBrand(CreateBikeBrandInput.newBuilder()
+                                                                         .name(bikeBrandName)
+                                                                         .build()));
         }
 
         @Test
@@ -61,9 +61,9 @@ public class RelationalBikeBrandsServiceTest {
                     .thenReturn(expectedEntity);
 
             // When we call the createBikeBrand method with that name
-            BikeBrand result = relationalBikesBrandsService.createBikeBrand(CreateBikeBrandInput.newBuilder()
-                                                                                    .name(bikeBrandName)
-                                                                                    .build());
+            BikeBrand result = bikeBrandsService.createBikeBrand(CreateBikeBrandInput.newBuilder()
+                                                                         .name(bikeBrandName)
+                                                                         .build());
 
             // Then we should have received the expected BikeBrand object
             assertThat(result).isEqualTo(expectedEntity.asBikeBrand());
@@ -81,7 +81,7 @@ public class RelationalBikeBrandsServiceTest {
             // When we call the deleteBikeBrand method with that name
             // Then the method should throw
             assertThrows(NoSuchElementException.class,
-                         () -> relationalBikesBrandsService.deleteBikeBrand(ghostBikeBrandName));
+                         () -> bikeBrandsService.deleteBikeBrand(ghostBikeBrandName));
         }
 
         @Test
@@ -92,7 +92,7 @@ public class RelationalBikeBrandsServiceTest {
                     .thenReturn(Optional.of(BikeBrandEntity.ofName(bikeBrandName)));
 
             // When we call deleteBikeBrand with that name
-            String result = relationalBikesBrandsService.deleteBikeBrand(bikeBrandName);
+            String result = bikeBrandsService.deleteBikeBrand(bikeBrandName);
 
             // Then the repository should have been asked to delete the bike brand
             verify(mockBikeBrandRepository).deleteById(bikeBrandName);

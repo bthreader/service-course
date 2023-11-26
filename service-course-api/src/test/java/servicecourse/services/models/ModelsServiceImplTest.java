@@ -23,17 +23,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RelationalModelsServiceTest {
+public class ModelsServiceImplTest {
     @Mock
     ModelRepository mockModelRepository;
     @Mock
     BikeBrandRepository mockBikeBrandRepository;
-    RelationalModelsService relationalModelsService;
+    ModelsServiceImpl modelsService;
 
     @BeforeEach
     void setup() {
-        relationalModelsService = new RelationalModelsService(mockModelRepository,
-                                                              mockBikeBrandRepository);
+        modelsService = new ModelsServiceImpl(mockModelRepository,
+                                              mockBikeBrandRepository);
     }
 
     @Nested
@@ -54,7 +54,7 @@ public class RelationalModelsServiceTest {
             // When we call the createModel method with that bike brand
             // Then the method should throw
             assertThrows(NoSuchElementException.class,
-                         () -> relationalModelsService.createModel(input));
+                         () -> modelsService.createModel(input));
         }
 
         @Test
@@ -88,7 +88,7 @@ public class RelationalModelsServiceTest {
                     .thenReturn(expectedSavedModelEntity);
 
             // When we call the createModel method with that input
-            Model result = relationalModelsService.createModel(input);
+            Model result = modelsService.createModel(input);
 
             // Then we should have received the expected Model object
             assertThat(result).isEqualTo(expectedSavedModelEntity.asModel());
@@ -106,7 +106,7 @@ public class RelationalModelsServiceTest {
             // When we call the deleteModel method with that id
             // Then the method should throw
             assertThrows(NoSuchElementException.class,
-                         () -> relationalModelsService.deleteModel(ModelId.serialize(ghostModelId)));
+                         () -> modelsService.deleteModel(ModelId.serialize(ghostModelId)));
         }
 
         @Test
@@ -117,7 +117,7 @@ public class RelationalModelsServiceTest {
                     .thenReturn(Optional.of(EntityFactory.newModelEntityWithId(modelId)));
 
             // When we call the deleteModel method with that id
-            String result = relationalModelsService.deleteModel(ModelId.serialize(modelId));
+            String result = modelsService.deleteModel(ModelId.serialize(modelId));
 
             // Then the repository should have been asked to delete the model
             verify(mockModelRepository).deleteById(modelId);

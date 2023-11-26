@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class RelationalBikesService implements BikesService {
+public class BikesServiceImpl implements BikesService {
     private final BikeRepository bikeRepository;
     private final ModelRepository modelRepository;
     private final GroupsetRespository groupsetRespository;
