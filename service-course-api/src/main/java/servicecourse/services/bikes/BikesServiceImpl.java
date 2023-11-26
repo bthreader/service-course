@@ -23,8 +23,17 @@ public class BikesServiceImpl implements BikesService {
 
     @Override
     public List<Bike> bikes(BikesFilterInput filter) {
-        // TODO filtering based on the filter input
+        if (filter == null) {
+            return bikes();
+        }
 
+        return bikeRepository.findAll(BikeEntitySpecification.from(filter))
+                .stream()
+                .map(BikeEntity::asBike)
+                .collect(Collectors.toList());
+    }
+
+    private List<Bike> bikes() {
         return bikeRepository.findAll()
                 .stream()
                 .map(BikeEntity::asBike)

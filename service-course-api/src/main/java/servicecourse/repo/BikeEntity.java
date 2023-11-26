@@ -22,12 +22,18 @@ public class BikeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "model_id")
+    /**
+     * TODO this is not causing joins
+     */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "model_id", nullable = false)
     private ModelEntity model;
 
-    @ManyToOne
-    @JoinColumn(name = "groupset_name")
+    /**
+     * TODO this is not causing joins
+     */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "groupset_name", nullable = false)
     private GroupsetEntity groupset;
 
     @Convert(converter = URLConverter.class)

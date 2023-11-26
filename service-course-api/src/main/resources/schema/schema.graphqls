@@ -170,7 +170,7 @@ type Groupset {
 Fields are combined with AND logic
 """
 input GroupsetFilterInput {
-    name: String
+    name: StringFilterInput
     brand: GroupsetBrand
     isElectronic: Boolean
 }
