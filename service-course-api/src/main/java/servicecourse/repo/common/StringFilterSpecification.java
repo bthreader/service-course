@@ -11,8 +11,9 @@ import java.util.Optional;
 
 public class StringFilterSpecification {
     /**
-     * Generates a specification from a StringFilterInput gql type given a fieldPath. Allowing for
-     * filtering based on that field.
+     * @param input     the gql input
+     * @param fieldPath the path from the root (of type {@code T}) to the {@literal String}
+     *                  attribute to apply the filter to
      */
     public static <T> Specification<T> from(StringFilterInput input,
                                             SingularAttribute<T, String> fieldPath) {
@@ -41,10 +42,12 @@ public class StringFilterSpecification {
                 .map(e -> ((root, query, cb) -> cb.equal(fieldExpression, equals)));
     }
 
+    /** Case in-sensitive */
     private static <T> Optional<Specification<T>> containsSpecification(String contains,
                                                                         Expression<String> fieldExpression) {
         return Optional.ofNullable(contains)
-                .map(c -> ((root, query, cb) -> cb.like(fieldExpression, "%" + contains + "%")));
+                .map(c -> ((root, query, cb) -> cb.like(cb.lower(fieldExpression),
+                                                        "%" + contains.toLowerCase() + "%")));
     }
 
     private static <T> Optional<Specification<T>> inSpecification(List<String> in,

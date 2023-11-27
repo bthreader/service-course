@@ -31,6 +31,9 @@ Fields are combined with OR logic.
 Must specify a minimum of one field, otherwise an error will be raised.
 """
 input StringFilterInput {
+    """
+    Case in-sensitive match
+    """
     contains: String
     in: [String!]
     equals: String
@@ -121,24 +124,28 @@ type Bike {
 
 input BikesFilterInput {
     """
-    If specified, return only bikes that are available in the provided date range
+    Return only bikes that are available in the provided date range
     """
     availableDateRange: DateRangeFilterInput
     """
-    If specified, return only bikes whose model matches the criteria
+    Return only bikes whose model matches the criteria
     """
     model: ModelFilterInput
     """
-    If specified, return only bikes with a groupset matching the criteria
+    Return only bikes with a groupset matching the criteria
     """
     groupset: GroupsetFilterInput
+    """
+    Return only bikes with a size that matches the input
+    """
     size: StringFilterInput
 }
 
 input CreateBikeInput {
     modelId: ID!
     """
-    There must be a groupset with this name already saved otherwise the mutation will fail
+    There must be a groupset with this name already saved otherwise the mutation will fail and an
+    error will be raised.
     """
     groupsetName: String!
     size: String!
@@ -148,7 +155,8 @@ input CreateBikeInput {
 input UpdateBikeInput {
     bikeId: ID!
     """
-    IF specified, there must be a groupset with this name already saved otherwise the mutation will fail
+    If specified, there must be a groupset with this name already saved otherwise the mutation will
+    fail and an error will be raised.
     """
     groupsetName: String
     heroImageUrl: Url
@@ -168,10 +176,10 @@ type Groupset {
     isElectronic: Boolean!
 }
 
-"""
-Fields are combined with AND logic
-"""
 input GroupsetFilterInput {
+    """
+    Return only groupsets with a name that matches the input
+    """
     name: StringFilterInput
     brand: GroupsetBrand
     isElectronic: Boolean
