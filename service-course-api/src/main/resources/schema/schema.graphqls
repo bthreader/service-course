@@ -26,7 +26,9 @@ input DateRangeFilterInput {
 }
 
 """
-Fields are combined with OR logic
+Fields are combined with OR logic.
+
+Must specify a minimum of one field, otherwise an error will be raised.
 """
 input StringFilterInput {
     contains: String

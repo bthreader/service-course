@@ -15,25 +15,18 @@ import java.net.URL;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @EqualsAndHashCode
 public class BikeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * TODO this is not causing joins
-     */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "model_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "model_id")
     private ModelEntity model;
 
-    /**
-     * TODO this is not causing joins
-     */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "groupset_name", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "groupset_name")
     private GroupsetEntity groupset;
 
     @Convert(converter = URLConverter.class)

@@ -22,4 +22,10 @@ public class Errors {
     public static RuntimeException newBikeBrandAlreadyExistsError() {
         return new IllegalArgumentException("Bike brand already exists");
     }
+
+    /** No fields specified on StringFilterInput, must specify at least one */
+    public static RuntimeException emptyStringFilterInput() {
+        return new IllegalStateException(
+                "No fields specified on StringFilterInput, must specify at least one");
+    }
 }
