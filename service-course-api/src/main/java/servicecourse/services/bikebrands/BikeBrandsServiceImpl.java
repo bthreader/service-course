@@ -9,7 +9,8 @@ import servicecourse.generated.types.BikeBrand;
 import servicecourse.generated.types.CreateBikeBrandInput;
 import servicecourse.repo.BikeBrandEntity;
 import servicecourse.repo.BikeBrandRepository;
-import servicecourse.services.Errors;
+import servicecourse.services.exceptions.BikeBrandAlreadyExistsException;
+import servicecourse.services.exceptions.BikeBrandNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,9 @@ public class BikeBrandsServiceImpl implements BikeBrandsService {
     public BikeBrand createBikeBrand(CreateBikeBrandInput input) {
         // Validate that the brand doesn't already exist
         bikeBrandRepository.findById(input.getName())
-                .ifPresent((entity) -> { throw Errors.newBikeBrandAlreadyExistsError(); });
+                .ifPresent((entity) -> {
+                    throw new BikeBrandAlreadyExistsException(input.getName());
+                });
 
         return bikeBrandRepository.save(BikeBrandEntity.ofName(input.getName())).asBikeBrand();
     }
@@ -35,7 +38,7 @@ public class BikeBrandsServiceImpl implements BikeBrandsService {
         return bikeBrandRepository.findById(name).map((entity) -> {
             bikeBrandRepository.deleteById(name);
             return name;
-        }).orElseThrow(Errors::newBikeBrandNotFoundError);
+        }).orElseThrow(() -> new BikeBrandNotFoundException(name));
     }
 
     /**

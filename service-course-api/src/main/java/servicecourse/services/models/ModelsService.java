@@ -2,6 +2,8 @@ package servicecourse.services.models;
 
 import servicecourse.generated.types.CreateModelInput;
 import servicecourse.generated.types.Model;
+import servicecourse.services.exceptions.BikeBrandNotFoundException;
+import servicecourse.services.exceptions.ModelNotFoundException;
 
 import java.util.List;
 import java.util.Map;
@@ -12,9 +14,20 @@ public interface ModelsService {
      */
     List<Model> findByBrandName(String brandName);
 
-    Model createModel(CreateModelInput input);
+    /**
+     * @param input the details of the new model
+     * @return the newly persisted model if successful, throws otherwise
+     * @throws BikeBrandNotFoundException if the bike brand specified in {@code input} doesn't
+     *                                    exist
+     */
+    Model createModel(CreateModelInput input) throws BikeBrandNotFoundException;
 
-    String deleteModel(String id);
+    /**
+     * @param id the ID of the model to delete
+     * @return the ID of the deleted model if it existed, throws otherwise
+     * @throws ModelNotFoundException if a model with the provided {@code id} doesn't exist
+     */
+    String deleteModel(String id) throws ModelNotFoundException;
 
     /**
      * @return a map; bike brand name -> models for that brand

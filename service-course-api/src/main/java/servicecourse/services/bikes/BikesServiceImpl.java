@@ -7,7 +7,9 @@ import servicecourse.generated.types.BikesFilterInput;
 import servicecourse.generated.types.CreateBikeInput;
 import servicecourse.generated.types.UpdateBikeInput;
 import servicecourse.repo.*;
-import servicecourse.services.Errors;
+import servicecourse.services.exceptions.BikeNotFoundException;
+import servicecourse.services.exceptions.GroupsetNotFoundException;
+import servicecourse.services.exceptions.ModelNotFoundException;
 import servicecourse.services.models.ModelId;
 
 import java.util.List;
@@ -43,9 +45,9 @@ public class BikesServiceImpl implements BikesService {
     @Override
     public Bike createBike(CreateBikeInput input) {
         ModelEntity modelEntity = modelRepository.findById(ModelId.deserialize(input.getModelId()))
-                .orElseThrow(Errors::newModelNotFoundError);
+                .orElseThrow(() -> new ModelNotFoundException(input.getModelId()));
         GroupsetEntity groupsetEntity = groupsetRespository.findById(input.getGroupsetName())
-                .orElseThrow(Errors::newGroupsetNotFoundError);
+                .orElseThrow(() -> new GroupsetNotFoundException(input.getGroupsetName()));
 
         BikeEntity newBike = new BikeEntity();
         newBike.apply(CreateBikeParams.builder()
@@ -68,7 +70,7 @@ public class BikesServiceImpl implements BikesService {
                             .flatMap(name -> {
                                 Optional<GroupsetEntity> result = groupsetRespository.findById(name);
                                 if (result.isEmpty()) {
-                                    throw Errors.newGroupsetNotFoundError();
+                                    throw new GroupsetNotFoundException(name);
                                 }
                                 return result;
                             });
@@ -89,7 +91,7 @@ public class BikesServiceImpl implements BikesService {
 
                     return entity.asBike();
                 })
-                .orElseThrow(Errors::newBikeNotFoundError);
+                .orElseThrow(() -> new BikeNotFoundException(input.getBikeId()));
     }
 
     @Override
@@ -99,6 +101,6 @@ public class BikesServiceImpl implements BikesService {
                     bikeRepository.deleteById(entity.getId());
                     return entity.getId();
                 })
-                .orElseThrow(Errors::newBikeNotFoundError);
+                .orElseThrow(() -> new BikeNotFoundException(id));
     }
 }

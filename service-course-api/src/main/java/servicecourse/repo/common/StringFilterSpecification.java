@@ -2,22 +2,26 @@ package servicecourse.repo.common;
 
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.metamodel.SingularAttribute;
+import lombok.NonNull;
 import org.springframework.data.jpa.domain.Specification;
 import servicecourse.generated.types.StringFilterInput;
-import servicecourse.services.Errors;
+import servicecourse.services.exceptions.EmptyStringFilterInputException;
 
 import java.util.List;
 import java.util.Optional;
 
 public class StringFilterSpecification {
     /**
-     * @param input     the gql input
-     * @param fieldPath the path from the root (of type {@code T}) to the {@literal String}
+     * @param input     the details of the filter to apply to the field
+     * @param fieldPath the path from the root entity (of type {@code T}) to the {@literal String}
      *                  attribute to apply the filter to
+     * @param <T>       the entity for which {@code fieldPath} is an attribute
+     * @return a specification ready to apply on the entity of type {@code T}
+     * @throws EmptyStringFilterInputException if the input is empty
      */
-    public static <T> Specification<T> from(StringFilterInput input,
-                                            SingularAttribute<T, String> fieldPath) {
-        validate(input);
+    public static <T> Specification<T> from(@NonNull StringFilterInput input,
+                                            SingularAttribute<T, String> fieldPath) throws EmptyStringFilterInputException {
+        validate(input, fieldPath.getName());
 
         return (root, query, cb) -> {
             Expression<String> fieldExpression = root.get(fieldPath);
@@ -30,9 +34,9 @@ public class StringFilterSpecification {
         };
     }
 
-    private static void validate(StringFilterInput input) {
+    private static void validate(StringFilterInput input, String fieldPath) {
         if (input.getContains() == null && input.getIn() == null && input.getEquals() == null) {
-            throw Errors.emptyStringFilterInput();
+            throw new EmptyStringFilterInputException(fieldPath);
         }
     }
 

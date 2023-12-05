@@ -7,7 +7,8 @@ import servicecourse.generated.types.Model;
 import servicecourse.repo.BikeBrandRepository;
 import servicecourse.repo.ModelEntity;
 import servicecourse.repo.ModelRepository;
-import servicecourse.services.Errors;
+import servicecourse.services.exceptions.BikeBrandNotFoundException;
+import servicecourse.services.exceptions.ModelNotFoundException;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class ModelsServiceImpl implements ModelsService {
     public Model createModel(CreateModelInput input) {
         // Validate the brand already exists
         bikeBrandRepository.findById(input.getBrandName())
-                .orElseThrow(Errors::newBikeBrandNotFoundError);
+                .orElseThrow(() -> new BikeBrandNotFoundException(input.getBrandName()));
 
         ModelEntity newModel = ModelEntity.builder()
                 .name(input.getName())
@@ -49,7 +50,7 @@ public class ModelsServiceImpl implements ModelsService {
                     modelRepository.deleteById(entity.getId());
                     return ModelId.serialize(entity.getId());
                 })
-                .orElseThrow(Errors::newModelNotFoundError);
+                .orElseThrow(() -> new ModelNotFoundException(id));
     }
 
     public Map<String, List<Model>> modelsForBikeBrands(List<String> brandNames) {
