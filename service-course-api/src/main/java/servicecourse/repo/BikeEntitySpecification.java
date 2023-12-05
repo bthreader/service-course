@@ -2,31 +2,49 @@ package servicecourse.repo;
 
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
+import lombok.NonNull;
 import org.springframework.data.jpa.domain.Specification;
 import servicecourse.generated.types.BikesFilterInput;
+import servicecourse.repo.common.SpecificationUtils;
 import servicecourse.repo.common.StringFilterSpecification;
 
-public class BikeEntitySpecification {
-    private BikeEntitySpecification() { }
+import java.util.ArrayList;
+import java.util.List;
 
-    public static Specification<BikeEntity> from(BikesFilterInput input) {
+public class BikeEntitySpecification {
+    /**
+     * @param input the filters to help select specific bikes
+     * @return a specification based on the input, if no fields were provided in the input the
+     * specification will be equivalent to "match all"
+     */
+    public static Specification<BikeEntity> from(@NonNull BikesFilterInput input) {
         return (root, query, cb) -> {
             // Force fetch join
             root.fetch("model", JoinType.INNER);
             root.fetch("groupset", JoinType.INNER);
 
-            // TODO these are NOT null safe
-            Predicate bikeEntityPredicate = StringFilterSpecification.from(input.getSize(),
-                                                                           BikeEntity_.size)
-                    .toPredicate(root, query, cb);
+            List<Predicate> predicates = new ArrayList<>();
 
-            // Apply filters on the subfields
-            Predicate groupsetEntityPredicate = GroupsetEntitySpecification.from(
-                    input.getGroupset()).toPredicate(query.from(GroupsetEntity.class), query, cb);
-            Predicate modelEntityPredicate = ModelEntitySpecification.from(
-                    input.getModel()).toPredicate(query.from(ModelEntity.class), query, cb);
+            // Bike entity predicate
+            if (input.getSize() != null) {
+                predicates.add(StringFilterSpecification.from(input.getSize(), BikeEntity_.size)
+                                       .toPredicate(root, query, cb));
+            }
 
-            return cb.and(bikeEntityPredicate, groupsetEntityPredicate, modelEntityPredicate);
+            // Groupset entity predicate
+            if (input.getGroupset() != null) {
+                predicates.add(GroupsetEntitySpecification.from(input.getGroupset())
+                                       .toPredicate(query.from(GroupsetEntity.class), query, cb));
+            }
+
+            // Model entity predicate
+            if (input.getModel() != null) {
+                predicates.add(ModelEntitySpecification.from(input.getModel())
+                                       .toPredicate(query.from(ModelEntity.class), query, cb));
+            }
+
+            return predicates.isEmpty() ? SpecificationUtils.alwaysTruePredicate(cb)
+                    : cb.and(predicates.toArray(Predicate[]::new));
         };
     }
 }
