@@ -15,7 +15,7 @@ public class BikeEntitySpecification {
             root.fetch("model", JoinType.INNER);
             root.fetch("groupset", JoinType.INNER);
 
-            // TODO these are null safe
+            // TODO these are NOT null safe
             Predicate bikeEntityPredicate = StringFilterSpecification.from(input.getSize(),
                                                                            BikeEntity_.size)
                     .toPredicate(root, query, cb);

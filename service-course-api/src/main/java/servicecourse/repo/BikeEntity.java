@@ -3,6 +3,7 @@ package servicecourse.repo;
 import jakarta.persistence.*;
 import lombok.*;
 import servicecourse.generated.types.Bike;
+import servicecourse.repo.common.URLConverter;
 import servicecourse.services.bikes.BikeId;
 import servicecourse.services.bikes.CrudBikeInput;
 

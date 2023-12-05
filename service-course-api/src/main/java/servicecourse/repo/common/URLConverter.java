@@ -1,4 +1,4 @@
-package servicecourse.repo;
+package servicecourse.repo.common;
 
 import jakarta.persistence.AttributeConverter;
 
