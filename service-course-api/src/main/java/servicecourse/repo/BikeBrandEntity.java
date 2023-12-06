@@ -3,10 +3,7 @@ package servicecourse.repo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import servicecourse.generated.types.BikeBrand;
 
 @Entity
@@ -14,6 +11,7 @@ import servicecourse.generated.types.BikeBrand;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @NoArgsConstructor
+@ToString
 public class BikeBrandEntity {
     @Id
     @NonNull

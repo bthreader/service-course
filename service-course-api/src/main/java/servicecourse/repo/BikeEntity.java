@@ -16,6 +16,7 @@ import java.net.URL;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @EqualsAndHashCode
 public class BikeEntity {
     @Id
