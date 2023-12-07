@@ -14,11 +14,11 @@ import java.util.stream.Stream;
 public class StringFilterSpecification {
     /**
      * @param input     the details of the filter to apply to the field
-     * @param fieldPath the path from the root entity (of type {@code T}) to the {@literal String}
+     * @param fieldPath the path from the root entity (of type {@code T}) to the {@code String}
      *                  attribute to apply the filter on
      * @param <T>       the entity for which {@code fieldPath} is an attribute
-     * @return a specification ready to apply to entities of type {@code T}, if no fields were
-     * provided in the input the specification will be equivalent to "match all"
+     * @return a specification ready to apply to entities of type {@code T}, if the input is empty
+     * the specification will be equivalent to "match all"
      */
     public static <T> Specification<T> from(@NonNull StringFilterInput input,
                                             SingularAttribute<T, String> fieldPath) {
@@ -43,7 +43,6 @@ public class StringFilterSpecification {
                 .map(e -> ((root, query, cb) -> cb.equal(fieldExpression, equals)));
     }
 
-    /** Case in-sensitive */
     private static <T> Optional<Specification<T>> containsSpecification(String contains,
                                                                         Expression<String> fieldExpression) {
         return Optional.ofNullable(contains)

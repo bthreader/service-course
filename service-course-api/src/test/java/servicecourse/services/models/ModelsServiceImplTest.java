@@ -13,8 +13,9 @@ import servicecourse.repo.BikeBrandRepository;
 import servicecourse.repo.ModelEntity;
 import servicecourse.repo.ModelRepository;
 import servicecourse.services.EntityFactory;
+import servicecourse.services.exceptions.BikeBrandNotFoundException;
+import servicecourse.services.exceptions.ModelNotFoundException;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,7 +54,7 @@ public class ModelsServiceImplTest {
 
             // When we call the createModel method with that bike brand
             // Then the method should throw
-            assertThrows(NoSuchElementException.class,
+            assertThrows(BikeBrandNotFoundException.class,
                          () -> modelsService.createModel(input));
         }
 
@@ -105,7 +106,7 @@ public class ModelsServiceImplTest {
 
             // When we call the deleteModel method with that id
             // Then the method should throw
-            assertThrows(NoSuchElementException.class,
+            assertThrows(ModelNotFoundException.class,
                          () -> modelsService.deleteModel(ModelId.serialize(ghostModelId)));
         }
 

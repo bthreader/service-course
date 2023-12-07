@@ -12,10 +12,12 @@ import servicecourse.generated.types.CreateBikeInput;
 import servicecourse.generated.types.UpdateBikeInput;
 import servicecourse.repo.*;
 import servicecourse.services.EntityFactory;
+import servicecourse.services.exceptions.BikeNotFoundException;
+import servicecourse.services.exceptions.GroupsetNotFoundException;
+import servicecourse.services.exceptions.ModelNotFoundException;
 
 import java.net.URL;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +65,7 @@ public class BikesServiceImplTest {
 
             // When trying to create a bike with that model
             // Then createBike should throw
-            assertThrows(NoSuchElementException.class,
+            assertThrows(ModelNotFoundException.class,
                          () -> bikesService.createBike(CreateBikeInput.newBuilder()
                                                                .modelId(BikeId.serialize(
                                                                        ghostModelId))
@@ -85,7 +87,7 @@ public class BikesServiceImplTest {
 
             // When trying to create a bike with that groupset
             // Then createBike should throw
-            assertThrows(NoSuchElementException.class,
+            assertThrows(GroupsetNotFoundException.class,
                          () -> bikesService.createBike(CreateBikeInput.newBuilder()
                                                                .modelId(BikeId.serialize(
                                                                        modelId))
@@ -154,7 +156,7 @@ public class BikesServiceImplTest {
 
             // When we call the updateBike method with this input
             // Then it should throw
-            assertThrows(NoSuchElementException.class,
+            assertThrows(BikeNotFoundException.class,
                          () -> bikesService.updateBike(input));
         }
 
@@ -178,7 +180,7 @@ public class BikesServiceImplTest {
 
             // When we call the updateBike method with this input
             // Then it should throw
-            assertThrows(NoSuchElementException.class,
+            assertThrows(GroupsetNotFoundException.class,
                          () -> bikesService.updateBike(input));
         }
 
@@ -235,7 +237,7 @@ public class BikesServiceImplTest {
 
             // When we call the deleteBike method with that id
             // Then the method should throw
-            assertThrows(NoSuchElementException.class,
+            assertThrows(BikeNotFoundException.class,
                          () -> bikesService.deleteBike(BikeId.serialize(ghostBikeId)));
         }
 

@@ -10,8 +10,9 @@ import servicecourse.generated.types.BikeBrand;
 import servicecourse.generated.types.CreateBikeBrandInput;
 import servicecourse.repo.BikeBrandEntity;
 import servicecourse.repo.BikeBrandRepository;
+import servicecourse.services.exceptions.BikeBrandAlreadyExistsException;
+import servicecourse.services.exceptions.BikeBrandNotFoundException;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +42,7 @@ public class BikeBrandsServiceImplTest {
 
             // When we call the createBikeBrand method with that name
             // Then the method should throw
-            assertThrows(IllegalArgumentException.class,
+            assertThrows(BikeBrandAlreadyExistsException.class,
                          () -> bikeBrandsService.createBikeBrand(CreateBikeBrandInput.newBuilder()
                                                                          .name(bikeBrandName)
                                                                          .build()));
@@ -80,7 +81,7 @@ public class BikeBrandsServiceImplTest {
 
             // When we call the deleteBikeBrand method with that name
             // Then the method should throw
-            assertThrows(NoSuchElementException.class,
+            assertThrows(BikeBrandNotFoundException.class,
                          () -> bikeBrandsService.deleteBikeBrand(ghostBikeBrandName));
         }
 
