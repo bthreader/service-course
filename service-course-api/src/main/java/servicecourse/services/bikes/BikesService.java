@@ -15,7 +15,7 @@ public interface BikesService {
 
     /**
      * @param input the details of the new bike
-     * @return the newly persisted bike if successful, throws otherwise
+     * @return the newly persisted bike
      * @throws ModelNotFoundException    if the model specified in {@code input} doesn't exist
      * @throws GroupsetNotFoundException if the groupset specified in {@code input} doesn't exist
      */
@@ -23,7 +23,7 @@ public interface BikesService {
 
     /**
      * @param input the details of an update to a bike
-     * @return the updated bike if successful, throws otherwise
+     * @return the updated bike
      * @throws BikeNotFoundException     if the bike ID provided in {@code input} doesn't exist
      * @throws GroupsetNotFoundException if a groupset is specified in {@code input} but it doesn't
      *                                   exist
@@ -32,7 +32,7 @@ public interface BikesService {
 
     /**
      * @param id the ID of the bike to delete
-     * @return the ID of the deleted bike if it existed, throws otherwise
+     * @return the ID of the deleted bike
      * @throws BikeNotFoundException if a bike with the provided {@code id} doesn't exist
      */
     Long deleteBike(String id);

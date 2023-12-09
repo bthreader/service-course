@@ -10,7 +10,7 @@ import java.util.List;
 public interface BikeBrandsService {
     /**
      * @param input the details of the new bike brand
-     * @return the newly persisted bike brand, throws otherwise
+     * @return the newly persisted bike brand
      * @throws BikeBrandAlreadyExistsException if the bike brand name specified in {@code input}
      *                                         already exists
      */
@@ -18,7 +18,7 @@ public interface BikeBrandsService {
 
     /**
      * @param name the name of the bike brand to delete
-     * @return the name of the deleted bike brand if it existed, throws otherwise
+     * @return the name of the deleted bike brand
      * @throws BikeBrandNotFoundException if a bike brand with the provided {@code name} doesn't
      *                                    exist
      */

@@ -68,13 +68,28 @@ type Query {
 type Mutation {
     createBike(input: CreateBikeInput!): Bike
     updateBike(input: UpdateBikeInput!): Bike
+    """
+    Returns the name of the successfully deleted bike
+    """
     deleteBike(id: ID!): ID
 
     createModel(input: CreateModelInput!): Model
+    """
+    Returns the ID of the successfully deleted model
+    """
     deleteModel(id: ID!): ID
 
     createBikeBrand(input: CreateBikeBrandInput!): BikeBrand
+    """
+    Returns the name of the successfully deleted bike brand
+    """
     deleteBikeBrand(name: String!): String
+
+    createGroupset(input: CreateGroupsetInput!): Groupset
+    """
+    Returns the name of the successfully deleted groupset
+    """
+    deleteGroupset(name: String!): String
 }
 
 # Bike brands
@@ -112,6 +127,9 @@ input ModelFilterInput {
     If specified, return only models with a name that matches the string filter
     """
     name: StringFilterInput
+    """
+    If specified, return only models with a model year that matches the integer filter
+    """
     modelYear: IntegerFilterInput
     """
     If specified, return only models with a brand name that matches the string filter
@@ -154,12 +172,13 @@ input BikesFilterInput {
 
 input CreateBikeInput {
     """
-    A model with this id must exist otherwise the mutation will fail and an error will be raised
+    The ID of the model of the bike, a model with this id must exist otherwise the mutation will
+    fail and an error will be raised
     """
     modelId: ID!
     """
-    A groupset with this name must exist otherwise the mutation will fail and an error will be
-    raised
+    The name of the groupset of the bike, a groupset with this name must exist otherwise the
+    mutation will fail and an error will be raised
     """
     groupsetName: String!
     size: String!
@@ -204,4 +223,10 @@ input GroupsetFilterInput {
     """
     brand: GroupsetBrand
     isElectronic: Boolean
+}
+
+input CreateGroupsetInput {
+    name: String!
+    brand: GroupsetBrand!
+    isElectronic: Boolean!
 }

@@ -16,7 +16,7 @@ public interface ModelsService {
 
     /**
      * @param input the details of the new model
-     * @return the newly persisted model if successful, throws otherwise
+     * @return the newly persisted model
      * @throws BikeBrandNotFoundException if the bike brand specified in {@code input} doesn't
      *                                    exist
      */
@@ -24,7 +24,7 @@ public interface ModelsService {
 
     /**
      * @param id the ID of the model to delete
-     * @return the ID of the deleted model if it existed, throws otherwise
+     * @return the ID of the deleted model
      * @throws ModelNotFoundException if a model with the provided {@code id} doesn't exist
      */
     String deleteModel(String id);
