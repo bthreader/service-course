@@ -19,7 +19,7 @@ public interface BikesService {
      * @throws ModelNotFoundException    if the model specified in {@code input} doesn't exist
      * @throws GroupsetNotFoundException if the groupset specified in {@code input} doesn't exist
      */
-    Bike createBike(CreateBikeInput input) throws ModelNotFoundException, GroupsetNotFoundException;
+    Bike createBike(CreateBikeInput input);
 
     /**
      * @param input the details of an update to a bike
@@ -28,12 +28,12 @@ public interface BikesService {
      * @throws GroupsetNotFoundException if a groupset is specified in {@code input} but it doesn't
      *                                   exist
      */
-    Bike updateBike(UpdateBikeInput input) throws BikeNotFoundException, GroupsetNotFoundException;
+    Bike updateBike(UpdateBikeInput input);
 
     /**
      * @param id the ID of the bike to delete
      * @return the ID of the deleted bike if it existed, throws otherwise
      * @throws BikeNotFoundException if a bike with the provided {@code id} doesn't exist
      */
-    Long deleteBike(String id) throws BikeNotFoundException;
+    Long deleteBike(String id);
 }

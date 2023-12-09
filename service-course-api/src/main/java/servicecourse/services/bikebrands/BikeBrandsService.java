@@ -14,7 +14,7 @@ public interface BikeBrandsService {
      * @throws BikeBrandAlreadyExistsException if the bike brand name specified in {@code input}
      *                                         already exists
      */
-    BikeBrand createBikeBrand(CreateBikeBrandInput input) throws BikeBrandAlreadyExistsException;
+    BikeBrand createBikeBrand(CreateBikeBrandInput input);
 
     /**
      * @param name the name of the bike brand to delete
@@ -22,7 +22,7 @@ public interface BikeBrandsService {
      * @throws BikeBrandNotFoundException if a bike brand with the provided {@code name} doesn't
      *                                    exist
      */
-    String deleteBikeBrand(String name) throws BikeBrandNotFoundException;
+    String deleteBikeBrand(String name);
 
     /** @return all bike brands */
     List<BikeBrand> bikeBrands();

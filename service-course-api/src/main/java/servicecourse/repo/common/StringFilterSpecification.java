@@ -19,6 +19,7 @@ public class StringFilterSpecification {
      * @param <T>       the entity for which {@code fieldPath} is an attribute
      * @return a specification ready to apply to entities of type {@code T}, if the input is empty
      * the specification will be equivalent to "match all"
+     * @throws NullPointerException if {@code input} is null
      */
     public static <T> Specification<T> from(@NonNull StringFilterInput input,
                                             SingularAttribute<T, String> fieldPath) {

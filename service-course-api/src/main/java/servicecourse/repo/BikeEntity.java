@@ -5,7 +5,7 @@ import lombok.*;
 import servicecourse.generated.types.Bike;
 import servicecourse.repo.common.URLConverter;
 import servicecourse.services.bikes.BikeId;
-import servicecourse.services.bikes.CrudBikeInput;
+import servicecourse.services.bikes.UpdateBikeParams;
 
 import java.net.URL;
 
@@ -46,10 +46,13 @@ public class BikeEntity {
                 .build();
     }
 
-    public void apply(CrudBikeInput input) {
-        input.model().ifPresent(this::setModel);
+    /**
+     * Apply the updates ready for persisting
+     *
+     * @param input the details of an update to a bike entity
+     */
+    public void apply(UpdateBikeParams input) {
         input.groupset().ifPresent(this::setGroupset);
         input.heroImageUrl().ifPresent(this::setHeroImageUrl);
-        input.size().ifPresent(this::setSize);
     }
 }

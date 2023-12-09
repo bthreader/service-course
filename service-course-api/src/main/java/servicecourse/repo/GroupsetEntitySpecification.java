@@ -1,6 +1,5 @@
 package servicecourse.repo;
 
-import lombok.NonNull;
 import org.springframework.data.jpa.domain.Specification;
 import servicecourse.generated.types.GroupsetBrand;
 import servicecourse.generated.types.GroupsetFilterInput;
@@ -15,11 +14,11 @@ import java.util.stream.Stream;
 
 public class GroupsetEntitySpecification {
     /**
-     * @param input the filters to help select specific groupsets
-     * @return a specification based on the input, if no fields were provided in the input the
-     * specification will be equivalent to "match all"
+     * @param input the details of the filter to apply to the entities
+     * @return a specification based on the input, if the input is empty the specification will be
+     * equivalent to "match all"
      */
-    public static Specification<GroupsetEntity> from(@NonNull GroupsetFilterInput input) {
+    public static Specification<GroupsetEntity> from(GroupsetFilterInput input) {
         List<Specification<GroupsetEntity>> specifications = Stream.of(
                         Optional.ofNullable(input.getBrand())
                                 .map(GroupsetEntitySpecification::brand),

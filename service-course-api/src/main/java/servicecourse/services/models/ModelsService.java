@@ -20,14 +20,14 @@ public interface ModelsService {
      * @throws BikeBrandNotFoundException if the bike brand specified in {@code input} doesn't
      *                                    exist
      */
-    Model createModel(CreateModelInput input) throws BikeBrandNotFoundException;
+    Model createModel(CreateModelInput input);
 
     /**
      * @param id the ID of the model to delete
      * @return the ID of the deleted model if it existed, throws otherwise
      * @throws ModelNotFoundException if a model with the provided {@code id} doesn't exist
      */
-    String deleteModel(String id) throws ModelNotFoundException;
+    String deleteModel(String id);
 
     /**
      * @return a map; bike brand name -> models for that brand

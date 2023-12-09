@@ -13,9 +13,10 @@ import java.util.List;
 
 public class BikeEntitySpecification {
     /**
-     * @param input the filters to help select specific bikes
-     * @return a specification based on the input, if no fields were provided in the input the
-     * specification will be equivalent to "match all"
+     * @param input the details of the filter to apply to the entities
+     * @return a specification based on the input, if the input is empty the specification will be
+     * equivalent to "match all"
+     * @throws NullPointerException if input is null
      */
     public static Specification<BikeEntity> from(@NonNull BikesFilterInput input) {
         return (root, query, cb) -> {

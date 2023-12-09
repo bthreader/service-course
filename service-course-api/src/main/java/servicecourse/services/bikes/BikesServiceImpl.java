@@ -49,13 +49,12 @@ public class BikesServiceImpl implements BikesService {
         GroupsetEntity groupsetEntity = groupsetRespository.findById(input.getGroupsetName())
                 .orElseThrow(() -> new GroupsetNotFoundException(input.getGroupsetName()));
 
-        BikeEntity newBike = new BikeEntity();
-        newBike.apply(CreateBikeParams.builder()
-                              .modelEntity(modelEntity)
-                              .groupsetEntity(groupsetEntity)
-                              .size(input.getSize())
-                              .heroImageUrl(input.getHeroImageUrl())
-                              .build());
+        BikeEntity newBike = BikeEntity.builder()
+                .model(modelEntity)
+                .groupset(groupsetEntity)
+                .size(input.getSize())
+                .heroImageUrl(input.getHeroImageUrl())
+                .build();
 
         return bikeRepository.save(newBike).asBike();
     }

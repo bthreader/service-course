@@ -17,8 +17,8 @@ public class BikeBrandsDataFetcher {
     private final BikeBrandsService bikeBrandsService;
 
     /**
-     * This is an enhanced attribute. Services will not generate it ahead of time (unlike brand
-     * name). Therefore, if specified by the user, it must be computed here.
+     * This is an enhanced attribute. Services will not generate it ahead of time. Therefore, if
+     * requested by the user, it must be computed here.
      * <p>
      * A data loader is used to avoid sending multiple separate requests to the models service when
      * handling a request that involves multiple bike brands (see {@link #bikeBrands()}).

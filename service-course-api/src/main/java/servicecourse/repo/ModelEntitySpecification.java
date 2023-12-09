@@ -1,6 +1,5 @@
 package servicecourse.repo;
 
-import lombok.NonNull;
 import org.springframework.data.jpa.domain.Specification;
 import servicecourse.generated.types.ModelFilterInput;
 import servicecourse.generated.types.StringFilterInput;
@@ -14,11 +13,11 @@ import java.util.stream.Stream;
 
 public class ModelEntitySpecification {
     /**
-     * @param input the filters to help select specific models
-     * @return a specification based on the input, if no fields were provided in the input the
-     * specification will be equivalent to "match all"
+     * @param input the details of the filter to apply to the entities
+     * @return a specification based on the input, if the input is empty the specification will be
+     * equivalent to "match all"
      */
-    public static Specification<ModelEntity> from(@NonNull ModelFilterInput input) {
+    public static Specification<ModelEntity> from(ModelFilterInput input) {
         List<Specification<ModelEntity>> specifications = Stream.of(
                         Optional.ofNullable(input.getName())
                                 .map(ModelEntitySpecification::name))

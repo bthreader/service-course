@@ -22,11 +22,6 @@ public class ModelEntity {
     private int modelYear;
     private String brandName;
 
-    /**
-     * Importantly, sets the {@code brandName} attribute on the {@code brand} field (of type
-     * {@code BikeBrand}), but not the {@code models} attribute. This will need to be resolved
-     * later.
-     */
     public Model asModel() {
         return Model.newBuilder()
                 .id(ModelId.serialize(id))
