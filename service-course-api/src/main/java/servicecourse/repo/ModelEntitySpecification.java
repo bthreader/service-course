@@ -1,8 +1,10 @@
 package servicecourse.repo;
 
 import org.springframework.data.jpa.domain.Specification;
+import servicecourse.generated.types.IntegerFilterInput;
 import servicecourse.generated.types.ModelFilterInput;
 import servicecourse.generated.types.StringFilterInput;
+import servicecourse.repo.common.IntegerFilterSpecification;
 import servicecourse.repo.common.SpecificationUtils;
 import servicecourse.repo.common.StringFilterSpecification;
 
@@ -20,7 +22,11 @@ public class ModelEntitySpecification {
     public static Specification<ModelEntity> from(ModelFilterInput input) {
         List<Specification<ModelEntity>> specifications = Stream.of(
                         Optional.ofNullable(input.getName())
-                                .map(ModelEntitySpecification::name))
+                                .map(ModelEntitySpecification::name),
+                        Optional.ofNullable(input.getModelYear())
+                                .map(ModelEntitySpecification::modelYear),
+                        Optional.ofNullable(input.getBrandName())
+                                .map(ModelEntitySpecification::brandName))
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
 
@@ -31,6 +37,18 @@ public class ModelEntitySpecification {
     private static Specification<ModelEntity> name(StringFilterInput input) {
         return (root, query, cb) -> StringFilterSpecification
                 .from(input, ModelEntity_.name)
+                .toPredicate(root, query, cb);
+    }
+
+    private static Specification<ModelEntity> modelYear(IntegerFilterInput input) {
+        return (root, query, cb) -> IntegerFilterSpecification
+                .from(input, ModelEntity_.modelYear)
+                .toPredicate(root, query, cb);
+    }
+
+    private static Specification<ModelEntity> brandName(StringFilterInput input) {
+        return (root, query, cb) -> StringFilterSpecification
+                .from(input, ModelEntity_.brandName)
                 .toPredicate(root, query, cb);
     }
 }

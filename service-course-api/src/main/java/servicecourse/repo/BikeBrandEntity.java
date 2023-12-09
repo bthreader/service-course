@@ -3,18 +3,20 @@ package servicecourse.repo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import servicecourse.generated.types.BikeBrand;
 
 @Entity
 @Table(name = "bike_brands")
 @EqualsAndHashCode
-@RequiredArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class BikeBrandEntity {
     @Id
-    @NonNull
     private String name;
 
     public static BikeBrandEntity ofName(String name) {

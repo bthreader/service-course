@@ -15,7 +15,7 @@ scalar Date
 
 # Utils
 
-enum Op {
+enum Operator {
     OR
     AND
 }
@@ -26,9 +26,8 @@ input DateRangeFilterInput {
 }
 
 """
-Fields are combined with OR logic.
-
-Must specify a minimum of one field, otherwise an error will be raised.
+If multiple fields are specified, they will be combined with OR logic. If no fields are specified,
+the filter will be treated as "match all".
 """
 input StringFilterInput {
     """
@@ -39,12 +38,13 @@ input StringFilterInput {
     equals: String
 }
 
+"""
+If multiple fields are specified, they will be combined with OR logic. If no fields are specified,
+the filter will be treated as "match all".
+"""
 input IntegerFilterInput {
-    lessThanOrEqualTo: Int
-    greaterThanOrEqualTo: Int
     equals: Int
     in: [Int!]
-    operator: Op
 }
 
 # Queries and mutations
@@ -104,12 +104,19 @@ input CreateModelInput {
 }
 
 """
-Fields are combined with AND logic
+If multiple fields are specified, they will be combined with AND logic. If no fields are
+specified, the filter will be treated as "match all".
 """
 input ModelFilterInput {
+    """
+    If specified, return only models with a name that matches the string filter
+    """
     name: StringFilterInput
     modelYear: IntegerFilterInput
-    brandName: String
+    """
+    If specified, return only models with a brand name that matches the string filter
+    """
+    brandName: StringFilterInput
 }
 
 # Bikes
@@ -122,30 +129,37 @@ type Bike {
     heroImageUrl: Url
 }
 
+"""
+If multiple fields are specified, they will be combined with AND logic. If no fields are
+specified, the filter will be treated as "match all".
+"""
 input BikesFilterInput {
     """
-    Return only bikes that are available in the provided date range
+    If specified, return only bikes that are available in the provided date range
     """
     availableDateRange: DateRangeFilterInput
     """
-    Return only bikes whose model matches the criteria
+    If specified, return only bikes whose model matches the criteria
     """
     model: ModelFilterInput
     """
-    Return only bikes with a groupset matching the criteria
+    If specified, return only bikes with a groupset matching the criteria
     """
     groupset: GroupsetFilterInput
     """
-    Return only bikes with a size that matches the input
+    If specified, return only bikes with a size that matches the string filter
     """
     size: StringFilterInput
 }
 
 input CreateBikeInput {
+    """
+    A model with this id must exist otherwise the mutation will fail and an error will be raised
+    """
     modelId: ID!
     """
-    There must be a groupset with this name already saved otherwise the mutation will fail and an
-    error will be raised.
+    A groupset with this name must exist otherwise the mutation will fail and an error will be
+    raised
     """
     groupsetName: String!
     size: String!
@@ -156,7 +170,7 @@ input UpdateBikeInput {
     bikeId: ID!
     """
     If specified, there must be a groupset with this name already saved otherwise the mutation will
-    fail and an error will be raised.
+    fail and an error will be raised
     """
     groupsetName: String
     heroImageUrl: Url
@@ -176,11 +190,18 @@ type Groupset {
     isElectronic: Boolean!
 }
 
+"""
+If multiple fields are specified, they will be combined with AND logic. If no fields are
+specified, the filter will be treated as "match all".
+"""
 input GroupsetFilterInput {
     """
-    Return only groupsets with a name that matches the input
+    If specified, return only groupsets with a name that matches the string filter
     """
     name: StringFilterInput
+    """
+    If specified, return only groupsets that belong to the provided brand
+    """
     brand: GroupsetBrand
     isElectronic: Boolean
 }
