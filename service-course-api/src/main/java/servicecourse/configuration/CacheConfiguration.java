@@ -1,4 +1,4 @@
-package servicecourse;
+package servicecourse.configuration;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCacheManager;

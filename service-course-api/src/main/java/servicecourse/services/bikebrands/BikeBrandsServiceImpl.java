@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import servicecourse.CacheConfiguration;
+import servicecourse.configuration.CacheConfiguration;
 import servicecourse.generated.types.BikeBrand;
 import servicecourse.generated.types.CreateBikeBrandInput;
 import servicecourse.repo.BikeBrandEntity;

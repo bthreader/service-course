@@ -79,7 +79,7 @@ public class BikesServiceImpl implements BikesService {
 
                     // Apply the input
                     entity.apply(UpdateBikeParams.builder()
-                                         .groupset(groupsetEntity)
+                                         .groupset(groupsetEntity.orElse(null))
                                          .heroImageUrl(input.getHeroImageUrl())
                                          .build());
 

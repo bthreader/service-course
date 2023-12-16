@@ -1,5 +1,6 @@
 package servicecourse.repo;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import servicecourse.generated.types.Bike;
@@ -12,7 +13,6 @@ import java.net.URL;
 @Entity
 @Table(name = "bikes")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,6 +31,7 @@ public class BikeEntity {
     @JoinColumn(name = "groupset_name")
     private GroupsetEntity groupset;
 
+    @Nullable
     @Convert(converter = URLConverter.class)
     private URL heroImageUrl;
 
@@ -54,5 +55,13 @@ public class BikeEntity {
     public void apply(UpdateBikeParams input) {
         input.groupset().ifPresent(this::setGroupset);
         input.heroImageUrl().ifPresent(this::setHeroImageUrl);
+    }
+
+    private void setGroupset(GroupsetEntity groupset) {
+        this.groupset = groupset;
+    }
+
+    private void setHeroImageUrl(URL heroImageUrl) {
+        this.heroImageUrl = heroImageUrl;
     }
 }
