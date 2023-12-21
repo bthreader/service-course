@@ -2,8 +2,8 @@ package servicecourse.services.models;
 
 import servicecourse.generated.types.CreateModelInput;
 import servicecourse.generated.types.Model;
-import servicecourse.services.exceptions.BikeBrandNotFoundException;
-import servicecourse.services.exceptions.ModelNotFoundException;
+import servicecourse.services.common.exceptions.BikeBrandNotFoundException;
+import servicecourse.services.common.exceptions.ModelNotFoundException;
 
 import java.util.List;
 import java.util.Map;

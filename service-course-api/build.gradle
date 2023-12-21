@@ -30,6 +30,8 @@ dependencies {
     testImplementation "org.mockito:mockito-core:3.+"
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
+    // https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 }
 
 generateJava {
@@ -37,7 +39,8 @@ generateJava {
     packageName = 'servicecourse.generated' // The package name to use to generate sources
     generateClient = true // Enable generating the type safe query API
     typeMapping = [
-            "Url": "java.net.URL",
+            "Url"        : "java.net.URL",
+            "PositiveInt": "java.lang.Integer"
     ]
 }
 

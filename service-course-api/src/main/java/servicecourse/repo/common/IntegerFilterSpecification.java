@@ -8,7 +8,6 @@ import servicecourse.generated.types.IntegerFilterInput;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class IntegerFilterSpecification {
@@ -30,7 +29,7 @@ public class IntegerFilterSpecification {
                             equalsSpecification(input.getEquals(), fieldExpression),
                             inSpecification(input.getIn(), fieldExpression))
                     .flatMap(Optional::stream)
-                    .collect(Collectors.toList());
+                    .toList();
 
             return specifications.isEmpty() ? SpecificationUtils.alwaysTruePredicate(cb)
                     : Specification.anyOf(specifications).toPredicate(root, query, cb);

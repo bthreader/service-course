@@ -1,4 +1,4 @@
-package servicecourse.services.exceptions;
+package servicecourse.services.common.exceptions;
 
 public class BikeBrandAlreadyExistsException extends IllegalArgumentException {
     public BikeBrandAlreadyExistsException(String brandName) {

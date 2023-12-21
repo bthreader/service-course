@@ -3,6 +3,7 @@ package servicecourse.datafetchers;
 import com.netflix.graphql.dgs.*;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoader;
+import servicecourse.generated.DgsConstants;
 import servicecourse.generated.types.BikeBrand;
 import servicecourse.generated.types.CreateBikeBrandInput;
 import servicecourse.generated.types.Model;
@@ -23,7 +24,7 @@ public class BikeBrandsDataFetcher {
      * A data loader is used to avoid sending multiple separate requests to the models service when
      * handling a request that involves multiple bike brands (see {@link #bikeBrands()}).
      */
-    @DgsData(parentType = "BikeBrand", field = "models")
+    @DgsData(parentType = DgsConstants.BIKEBRAND.TYPE_NAME, field = DgsConstants.BIKEBRAND.Models)
     public CompletableFuture<List<Model>> models(DgsDataFetchingEnvironment dfe) {
         BikeBrand bikeBrand = dfe.getSource();
         DataLoader<String, List<Model>> modelsDataLoader = dfe.getDataLoader("models");

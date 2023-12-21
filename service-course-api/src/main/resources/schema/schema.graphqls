@@ -13,6 +13,11 @@ scalar Date
 "https://tools.ietf.org/html/rfc3339"
 )
 
+"""
+An integer that must be greater than zero
+"""
+scalar PositiveInt
+
 # Utils
 
 enum Operator {
@@ -47,10 +52,56 @@ input IntegerFilterInput {
     in: [Int!]
 }
 
+input CursorInput {
+    cursor: String
+}
+
+type Cursor {
+    cursor: String
+}
+
+"""
+Page object to support pagination
+"""
+type PageInfo {
+    """
+    Is there a previous page for the direction we're paging in?
+
+    I.e. if paging using `after`, is there a page before?
+    """
+    hasPreviousPage: Boolean!
+    """
+    Is there a next page for the direction we're paging in?
+
+    I.e. if paging using `after`, is there another page after?
+    """
+    hasNextPage: Boolean!
+    """
+    Null if no data
+    """
+    startCursor: Cursor
+    """
+    Null if no data
+    """
+    endCursor: Cursor
+}
+
 # Queries and mutations
 
 type Query {
-    bikes(filter: BikesFilterInput): [Bike!]!
+    bikes(
+        filter: BikesFilterInput,
+        """
+        The number of results to return.
+        - Must be greater than zero
+        - The maximum value is 100, values higher than this will be truncated
+        - If not specified, will default to 10
+        """
+        first: PositiveInt = 10,
+        """
+        If specified, only return results after the cursor
+        """
+        after: CursorInput): BikeConnection!
     """
     All bike brands
     """
@@ -69,25 +120,25 @@ type Mutation {
     createBike(input: CreateBikeInput!): Bike
     updateBike(input: UpdateBikeInput!): Bike
     """
-    Returns the name of the successfully deleted bike
+    - @return the name of the successfully deleted bike
     """
     deleteBike(id: ID!): ID
 
     createModel(input: CreateModelInput!): Model
     """
-    Returns the ID of the successfully deleted model
+    - @return the ID of the successfully deleted model
     """
     deleteModel(id: ID!): ID
 
     createBikeBrand(input: CreateBikeBrandInput!): BikeBrand
     """
-    Returns the name of the successfully deleted bike brand
+    - @return the name of the successfully deleted bike brand
     """
     deleteBikeBrand(name: String!): String
 
     createGroupset(input: CreateGroupsetInput!): Groupset
     """
-    Returns the name of the successfully deleted groupset
+    - @return the name of the successfully deleted groupset
     """
     deleteGroupset(name: String!): String
 }
@@ -145,6 +196,19 @@ type Bike {
     size: String!
     groupset: Groupset!
     heroImageUrl: Url
+}
+
+type BikeConnection {
+    edges: [BikeConnectionEdge!]!
+    """
+    TODO can we guarantee non-null here?
+    """
+    pageInfo: PageInfo
+}
+
+type BikeConnectionEdge {
+    node: Bike!
+    cursor: String!
 }
 
 """

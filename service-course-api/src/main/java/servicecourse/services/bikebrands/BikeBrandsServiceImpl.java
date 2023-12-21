@@ -9,11 +9,10 @@ import servicecourse.generated.types.BikeBrand;
 import servicecourse.generated.types.CreateBikeBrandInput;
 import servicecourse.repo.BikeBrandEntity;
 import servicecourse.repo.BikeBrandRepository;
-import servicecourse.services.exceptions.BikeBrandAlreadyExistsException;
-import servicecourse.services.exceptions.BikeBrandNotFoundException;
+import servicecourse.services.common.exceptions.BikeBrandAlreadyExistsException;
+import servicecourse.services.common.exceptions.BikeBrandNotFoundException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +50,6 @@ public class BikeBrandsServiceImpl implements BikeBrandsService {
         return bikeBrandRepository.findAll()
                 .stream()
                 .map(BikeBrandEntity::asBikeBrand)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

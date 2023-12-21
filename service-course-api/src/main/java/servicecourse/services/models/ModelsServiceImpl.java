@@ -7,8 +7,8 @@ import servicecourse.generated.types.Model;
 import servicecourse.repo.BikeBrandRepository;
 import servicecourse.repo.ModelEntity;
 import servicecourse.repo.ModelRepository;
-import servicecourse.services.exceptions.BikeBrandNotFoundException;
-import servicecourse.services.exceptions.ModelNotFoundException;
+import servicecourse.services.common.exceptions.BikeBrandNotFoundException;
+import servicecourse.services.common.exceptions.ModelNotFoundException;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +25,7 @@ public class ModelsServiceImpl implements ModelsService {
         return modelRepository.findByBrandName(brandName)
                 .stream()
                 .map(ModelEntity::asModel)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

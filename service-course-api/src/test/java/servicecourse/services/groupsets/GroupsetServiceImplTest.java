@@ -12,8 +12,8 @@ import servicecourse.generated.types.GroupsetBrand;
 import servicecourse.repo.GroupsetEntity;
 import servicecourse.repo.GroupsetRespository;
 import servicecourse.services.EntityFactory;
-import servicecourse.services.exceptions.GroupsetAlreadyExistsException;
-import servicecourse.services.exceptions.GroupsetNotFoundException;
+import servicecourse.services.common.exceptions.GroupsetAlreadyExistsException;
+import servicecourse.services.common.exceptions.GroupsetNotFoundException;
 
 import java.util.Optional;
 

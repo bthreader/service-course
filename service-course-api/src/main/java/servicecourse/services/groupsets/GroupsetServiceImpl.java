@@ -6,8 +6,8 @@ import servicecourse.generated.types.CreateGroupsetInput;
 import servicecourse.generated.types.Groupset;
 import servicecourse.repo.GroupsetEntity;
 import servicecourse.repo.GroupsetRespository;
-import servicecourse.services.exceptions.GroupsetAlreadyExistsException;
-import servicecourse.services.exceptions.GroupsetNotFoundException;
+import servicecourse.services.common.exceptions.GroupsetAlreadyExistsException;
+import servicecourse.services.common.exceptions.GroupsetNotFoundException;
 
 @Service
 @RequiredArgsConstructor

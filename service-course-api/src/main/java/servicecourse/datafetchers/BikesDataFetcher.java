@@ -5,13 +5,8 @@ import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import lombok.RequiredArgsConstructor;
-import servicecourse.generated.types.Bike;
-import servicecourse.generated.types.BikesFilterInput;
-import servicecourse.generated.types.CreateBikeInput;
-import servicecourse.generated.types.UpdateBikeInput;
+import servicecourse.generated.types.*;
 import servicecourse.services.bikes.BikesService;
-
-import java.util.List;
 
 @DgsComponent
 @RequiredArgsConstructor
@@ -19,8 +14,9 @@ public class BikesDataFetcher {
     private final BikesService bikesService;
 
     @DgsQuery
-    public List<Bike> bikes(@InputArgument BikesFilterInput filter) {
-        return bikesService.bikes(filter);
+    public BikeConnection bikes(@InputArgument BikesFilterInput filter, @InputArgument int first,
+                                @InputArgument CursorInput after) {
+        return bikesService.bikes(filter, first, after);
     }
 
     @DgsMutation

@@ -3,10 +3,10 @@ package servicecourse.repo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import servicecourse.URLFactory;
 import servicecourse.generated.types.Bike;
 import servicecourse.services.EntityFactory;
 import servicecourse.services.bikes.UpdateBikeParams;
+import servicecourse.utils.URLFactory;
 
 import java.net.URL;
 

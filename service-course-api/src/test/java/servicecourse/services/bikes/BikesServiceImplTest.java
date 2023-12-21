@@ -4,17 +4,25 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import servicecourse.URLFactory;
-import servicecourse.generated.types.Bike;
-import servicecourse.generated.types.CreateBikeInput;
-import servicecourse.generated.types.UpdateBikeInput;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import servicecourse.generated.types.*;
 import servicecourse.repo.*;
+import servicecourse.repo.common.EntityConstants;
+import servicecourse.repo.common.SortUtils;
 import servicecourse.services.EntityFactory;
-import servicecourse.services.exceptions.BikeNotFoundException;
-import servicecourse.services.exceptions.GroupsetNotFoundException;
-import servicecourse.services.exceptions.ModelNotFoundException;
+import servicecourse.services.common.exceptions.BikeNotFoundException;
+import servicecourse.services.common.exceptions.GroupsetNotFoundException;
+import servicecourse.services.common.exceptions.InvalidCursorException;
+import servicecourse.services.common.exceptions.ModelNotFoundException;
+import servicecourse.utils.Base64Factory;
+import servicecourse.utils.Base64ToLongConverter;
+import servicecourse.utils.URLFactory;
 
 import java.net.URL;
 import java.util.List;
@@ -22,6 +30,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,17 +51,112 @@ public class BikesServiceImplTest {
                                             mockGroupsetRepository);
     }
 
-    @Test
-    void bikes() {
-        // Given
-        BikeEntity result = EntityFactory.newBikeEntity();
+    @Nested
+    class bikes {
+        @Test
+        void single_result_take_one_with_no_after() {
+            // Given a `first` and a result
+            int numberOfResults = 1;
+            int first = 1;
+            BikeEntity result = EntityFactory.newBikeEntity();
 
-        // When
-        when(mockBikeRepository.findAll()).thenReturn(List.of(result));
-        List<Bike> bikes = bikesService.bikes(null);
+            // When the repo returns the result
+            when(mockBikeRepository.findAll(ArgumentMatchers.<Specification<BikeEntity>>any(),
+                                            any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(List.of(result),
+                                               PageRequest.of(0, first, SortUtils.sortByIdAsc()),
+                                               numberOfResults));
 
-        // Then
-        assertThat(bikes).isEqualTo(List.of(result.asBike()));
+            // When we call the method with `first`
+            BikeConnection bikeConnection = bikesService.bikes(null, first, null);
+
+            // Then we get the expected result back
+            assertThat(bikeConnection.getEdges().stream().map(BikeConnectionEdge::getNode))
+                    .isEqualTo(List.of(result.asBike()));
+
+            // Then the page info contains the correct information
+            assertThat(bikeConnection.getPageInfo().getHasNextPage()).isFalse();
+            assertThat(bikeConnection.getPageInfo().getHasPreviousPage()).isFalse();
+        }
+
+        @Test
+        void multiple_results_take_one_with_no_after() {
+            // Given a `total` that is larger than `first`
+            int total = 2;
+            int first = 1;
+            BikeEntity result = EntityFactory.newBikeEntity();
+
+            // When the repo returns the result
+            when(mockBikeRepository.findAll(ArgumentMatchers.<Specification<BikeEntity>>any(),
+                                            any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(List.of(result),
+                                               PageRequest.of(0, first, SortUtils.sortByIdAsc()),
+                                               total));
+
+            // When we call the method with `first`
+            BikeConnection bikeConnection = bikesService.bikes(null, first, null);
+
+            // Then we get the expected results back
+            assertThat(bikeConnection.getEdges().stream().map(BikeConnectionEdge::getNode))
+                    .isEqualTo(List.of(result.asBike()));
+
+            // Then the page info contains the correct information
+            assertThat(bikeConnection.getPageInfo().getHasNextPage()).isTrue();
+            assertThat(bikeConnection.getPageInfo().getHasPreviousPage()).isFalse();
+        }
+
+        @Test
+        void multiple_results_take_one_with_after() {
+            // Given a valid `after`, which has a high enough index for there to be results before
+            Long id = EntityConstants.MINIMUM_ID_VALUE + 1L;
+            String after = Base64ToLongConverter.encodeToBase64(id);
+
+            // Given a `total` that is larger than `first`
+            int total = 2;
+            int first = 1;
+            BikeEntity result = EntityFactory.newBikeEntity();
+
+            // When the repo returns the result
+            when(mockBikeRepository.findAll(ArgumentMatchers.<Specification<BikeEntity>>any(),
+                                            any(Pageable.class)))
+                    .thenReturn(new PageImpl<>(List.of(result),
+                                               PageRequest.of(0, first, SortUtils.sortByIdAsc()),
+                                               total));
+
+            // When we call the method with `first` and `after`
+            BikeConnection bikeConnection = bikesService.bikes(null,
+                                                               first,
+                                                               CursorInput.newBuilder()
+                                                                       .cursor(after)
+                                                                       .build());
+
+            // Then we get the expected result back
+            assertThat(bikeConnection.getEdges().stream().map(BikeConnectionEdge::getNode))
+                    .isEqualTo(List.of(result.asBike()));
+
+            // Then the page info contains the correct information
+            assertThat(bikeConnection.getPageInfo().getHasNextPage()).isTrue();
+            assertThat(bikeConnection.getPageInfo().getHasPreviousPage()).isTrue();
+        }
+
+        @Test
+        void throws_on_bad_after() {
+            // Given a string with invalid Base64 characters
+            // Then the method should throw
+            assertThrows(InvalidCursorException.class,
+                         () -> bikesService.bikes(null, 1, CursorInput.newBuilder()
+                                 .cursor(Base64Factory.invalidBase64String())
+                                 .build()
+                         ));
+
+            // Given a string that is valid Base64, but decodes to a string not a long
+            // Then the method should throw
+            assertThrows(InvalidCursorException.class,
+                         () -> bikesService.bikes(null, 1, CursorInput.newBuilder()
+                                 .cursor(Base64Factory.stringEncodedAsBase64String())
+                                 .build()
+                         ));
+        }
     }
 
     @Nested

@@ -10,8 +10,8 @@ import servicecourse.generated.types.BikeBrand;
 import servicecourse.generated.types.CreateBikeBrandInput;
 import servicecourse.repo.BikeBrandEntity;
 import servicecourse.repo.BikeBrandRepository;
-import servicecourse.services.exceptions.BikeBrandAlreadyExistsException;
-import servicecourse.services.exceptions.BikeBrandNotFoundException;
+import servicecourse.services.common.exceptions.BikeBrandAlreadyExistsException;
+import servicecourse.services.common.exceptions.BikeBrandNotFoundException;
 
 import java.util.Optional;
 

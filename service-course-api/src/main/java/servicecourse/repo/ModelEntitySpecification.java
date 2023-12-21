@@ -10,7 +10,6 @@ import servicecourse.repo.common.StringFilterSpecification;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ModelEntitySpecification {
@@ -28,7 +27,7 @@ public class ModelEntitySpecification {
                         Optional.ofNullable(input.getBrandName())
                                 .map(ModelEntitySpecification::brandName))
                 .flatMap(Optional::stream)
-                .collect(Collectors.toList());
+                .toList();
 
         return specifications.isEmpty() ? SpecificationUtils.matchAll()
                 : Specification.allOf(specifications);

@@ -1,4 +1,4 @@
-package servicecourse.services.exceptions;
+package servicecourse.services.common.exceptions;
 
 import java.util.NoSuchElementException;
 

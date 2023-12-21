@@ -1,17 +1,21 @@
 package servicecourse.services.bikes;
 
-import servicecourse.generated.types.Bike;
-import servicecourse.generated.types.BikesFilterInput;
-import servicecourse.generated.types.CreateBikeInput;
-import servicecourse.generated.types.UpdateBikeInput;
-import servicecourse.services.exceptions.BikeNotFoundException;
-import servicecourse.services.exceptions.GroupsetNotFoundException;
-import servicecourse.services.exceptions.ModelNotFoundException;
-
-import java.util.List;
+import org.springframework.lang.Nullable;
+import servicecourse.generated.types.*;
+import servicecourse.services.common.exceptions.BikeNotFoundException;
+import servicecourse.services.common.exceptions.GroupsetNotFoundException;
+import servicecourse.services.common.exceptions.ModelNotFoundException;
 
 public interface BikesService {
-    List<Bike> bikes(BikesFilterInput filter);
+    /**
+     * @param filter the filter to apply to the bikes
+     * @param first  the number of results to return. Must be greater than zero. The maximum value
+     *               is 100, values higher than this will be truncated.
+     * @param after  if specified, only return results after the cursor
+     * @return a connection of bikes
+     * @throws IllegalArgumentException if first is less than one
+     */
+    BikeConnection bikes(@Nullable BikesFilterInput filter, int first, @Nullable CursorInput after);
 
     /**
      * @param input the details of the new bike

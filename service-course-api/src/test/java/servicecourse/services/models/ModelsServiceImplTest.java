@@ -13,8 +13,8 @@ import servicecourse.repo.BikeBrandRepository;
 import servicecourse.repo.ModelEntity;
 import servicecourse.repo.ModelRepository;
 import servicecourse.services.EntityFactory;
-import servicecourse.services.exceptions.BikeBrandNotFoundException;
-import servicecourse.services.exceptions.ModelNotFoundException;
+import servicecourse.services.common.exceptions.BikeBrandNotFoundException;
+import servicecourse.services.common.exceptions.ModelNotFoundException;
 
 import java.util.Optional;
 

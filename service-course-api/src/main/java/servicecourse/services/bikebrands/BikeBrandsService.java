@@ -2,8 +2,8 @@ package servicecourse.services.bikebrands;
 
 import servicecourse.generated.types.BikeBrand;
 import servicecourse.generated.types.CreateBikeBrandInput;
-import servicecourse.services.exceptions.BikeBrandAlreadyExistsException;
-import servicecourse.services.exceptions.BikeBrandNotFoundException;
+import servicecourse.services.common.exceptions.BikeBrandAlreadyExistsException;
+import servicecourse.services.common.exceptions.BikeBrandNotFoundException;
 
 import java.util.List;
 

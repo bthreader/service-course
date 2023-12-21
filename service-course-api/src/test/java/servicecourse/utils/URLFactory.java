@@ -1,4 +1,4 @@
-package servicecourse;
+package servicecourse.utils;
 
 import java.net.MalformedURLException;
 import java.net.URL;

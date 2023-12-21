@@ -2,8 +2,8 @@ package servicecourse.services.groupsets;
 
 import servicecourse.generated.types.CreateGroupsetInput;
 import servicecourse.generated.types.Groupset;
-import servicecourse.services.exceptions.GroupsetAlreadyExistsException;
-import servicecourse.services.exceptions.GroupsetNotFoundException;
+import servicecourse.services.common.exceptions.GroupsetAlreadyExistsException;
+import servicecourse.services.common.exceptions.GroupsetNotFoundException;
 
 public interface GroupsetService {
     /**
