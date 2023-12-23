@@ -20,9 +20,11 @@ public class BikeEntitySpecification {
      */
     public static Specification<BikeEntity> from(@NonNull BikesFilterInput input) {
         return (root, query, cb) -> {
-            // Force fetch join
-            root.fetch("model", JoinType.INNER);
-            root.fetch("groupset", JoinType.INNER);
+            // Force fetch join on all queries apart from the count query used by JPA for paging
+            if (query.getResultType() != Long.class) {
+                root.fetch("model", JoinType.INNER);
+                root.fetch("groupset", JoinType.INNER);
+            }
 
             List<Predicate> predicates = new ArrayList<>();
 
