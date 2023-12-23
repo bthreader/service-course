@@ -44,7 +44,7 @@ public class CursorUtils {
 
     /**
      * Simple wrapper around {@link Base64ToLongConverter} to translate
-     * {@code NumberFormatException} into the more appropriate {@code InvalidCursorException}.
+     * {@link IllegalArgumentException} into the more appropriate {@link InvalidCursorException}.
      *
      * @param cursorName the name of the cursor, makes exception message more useful
      * @param cursor     a Base64 encoded {@code Long}
