@@ -1,5 +1,5 @@
 {
-  "ignorePatterns": ["*config.js"],
+  "ignorePatterns": ["*config.js", "src/__generated__"],
   "extends": [
     "next/core-web-vitals",
     "eslint:recommended",
@@ -37,7 +37,12 @@
   "overrides": [
     // next and others require default exports for some functionality
     {
-      "files": ["tailwind.config.ts", "**/*/page.tsx", "**/*/layout.tsx"],
+      "files": [
+        "codegen.ts",
+        "tailwind.config.ts",
+        "**/*/page.tsx",
+        "**/*/layout.tsx"
+      ],
       "rules": {
         "no-restricted-syntax": "off"
       }
