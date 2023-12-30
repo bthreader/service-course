@@ -10,7 +10,6 @@ import servicecourse.generated.types.*;
 import servicecourse.repo.*;
 import servicecourse.repo.common.LongFilterSpecification;
 import servicecourse.repo.common.SortUtils;
-import servicecourse.repo.common.SpecificationUtils;
 import servicecourse.services.common.CursorName;
 import servicecourse.services.common.CursorUtils;
 import servicecourse.services.common.exceptions.BikeNotFoundException;
@@ -18,9 +17,7 @@ import servicecourse.services.common.exceptions.GroupsetNotFoundException;
 import servicecourse.services.common.exceptions.ModelNotFoundException;
 import servicecourse.services.models.ModelId;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static servicecourse.repo.common.EntityConstants.MINIMUM_ID_VALUE;
 
@@ -33,38 +30,34 @@ public class BikesServiceImpl implements BikesService {
     private static final int MAXIMUM_FIRST_VALUE = 100;
 
     @Override
-    public BikeConnection bikes(BikesFilterInput filter, int first, @Nullable CursorInput after) {
+    public BikeConnection bikes(final BikesFilterInput filter, final int first,
+                                @Nullable final CursorInput after) {
         if (first < 1) {
             throw new IllegalArgumentException("First must be greater than zero");
         }
 
-        Optional<Long> afterId = Optional.ofNullable(after)
+        final Optional<Long> afterId = Optional.ofNullable(after)
                 .map(CursorInput::getCursor)
                 .map(cursor -> CursorUtils.decodeBase64CursorToLong(CursorName.AFTER, cursor));
 
         // If specified, the after cursor is the ID of the last bike seen
         // Bikes are always returned to the client with IDs in ascending order
         // Therefore, if `after` is present, our query is only interested in IDs after this ID
-        Optional<Specification<BikeEntity>> afterSpecification = afterId
+        final Optional<Specification<BikeEntity>> afterSpecification = afterId
                 .map(id -> LongFilterSpecification.newGreaterThanSpecification(id, BikeEntity_.id));
 
-        // Combine the (optional) filter and after specifications
-        List<Specification<BikeEntity>> specifications = Stream.of(
-                        Optional.ofNullable(filter)
-                                .map(BikeEntitySpecification::from),
-                        afterSpecification
-                )
-                .flatMap(Optional::stream)
-                .toList();
-        Specification<BikeEntity> specification = specifications.isEmpty() ? SpecificationUtils.matchAll()
-                : Specification.allOf(specifications);
+        final Specification<BikeEntity> defaultSpecification = BikeEntitySpecification.from(filter);
+
+        final Specification<BikeEntity> specification = afterSpecification
+                .map(s -> Specification.allOf(defaultSpecification, s))
+                .orElse(defaultSpecification);
 
         // Run the query
-        Page<BikeEntity> page = bikeRepository.findAll(specification,
-                                                       PageRequest.of(0,
-                                                                      Math.min(first,
-                                                                               MAXIMUM_FIRST_VALUE),
-                                                                      SortUtils.sortByIdAsc()));
+        final Page<BikeEntity> page = bikeRepository.findAll(specification,
+                                                             PageRequest.of(0,
+                                                                            Math.min(first,
+                                                                                     MAXIMUM_FIRST_VALUE),
+                                                                            SortUtils.sortByIdAsc()));
 
         return BikeConnection.newBuilder()
                 .edges(page.get()
@@ -83,13 +76,13 @@ public class BikesServiceImpl implements BikesService {
     }
 
     @Override
-    public Bike createBike(CreateBikeInput input) {
-        ModelEntity modelEntity = modelRepository.findById(ModelId.deserialize(input.getModelId()))
+    public Bike createBike(final CreateBikeInput input) {
+        final ModelEntity modelEntity = modelRepository.findById(ModelId.deserialize(input.getModelId()))
                 .orElseThrow(() -> new ModelNotFoundException(input.getModelId()));
-        GroupsetEntity groupsetEntity = groupsetRespository.findById(input.getGroupsetName())
+        final GroupsetEntity groupsetEntity = groupsetRespository.findById(input.getGroupsetName())
                 .orElseThrow(() -> new GroupsetNotFoundException(input.getGroupsetName()));
 
-        BikeEntity newBike = BikeEntity.builder()
+        final BikeEntity newBike = BikeEntity.builder()
                 .model(modelEntity)
                 .groupset(groupsetEntity)
                 .size(input.getSize())
@@ -100,14 +93,15 @@ public class BikesServiceImpl implements BikesService {
     }
 
     @Override
-    public Bike updateBike(UpdateBikeInput input) {
+    public Bike updateBike(final UpdateBikeInput input) {
         return bikeRepository
                 .findById(BikeId.deserialize(input.getBikeId()))
                 .map((entity) -> {
                     // Pull up the groupset, if it has been specified
-                    Optional<GroupsetEntity> groupsetEntity = Optional.ofNullable(input.getGroupsetName())
+                    final Optional<GroupsetEntity> groupsetEntity = Optional.ofNullable(input.getGroupsetName())
                             .flatMap(name -> {
-                                Optional<GroupsetEntity> result = groupsetRespository.findById(name);
+                                final Optional<GroupsetEntity> result = groupsetRespository.findById(
+                                        name);
                                 if (result.isEmpty()) {
                                     throw new GroupsetNotFoundException(name);
                                 }
@@ -115,7 +109,7 @@ public class BikesServiceImpl implements BikesService {
                             });
 
                     // Store a copy of the old version of the bike
-                    Bike oldBike = entity.asBike();
+                    final Bike oldBike = entity.asBike();
 
                     // Apply the input
                     entity.apply(UpdateBikeParams.builder()
@@ -134,7 +128,7 @@ public class BikesServiceImpl implements BikesService {
     }
 
     @Override
-    public Long deleteBike(String id) {
+    public Long deleteBike(final String id) {
         return bikeRepository.findById(BikeId.deserialize(id))
                 .map((entity) -> {
                     bikeRepository.deleteById(entity.getId());

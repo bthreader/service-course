@@ -2,8 +2,8 @@ package servicecourse.repo;
 
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
-import lombok.NonNull;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 import servicecourse.generated.types.BikesFilterInput;
 import servicecourse.repo.common.SpecificationUtils;
 import servicecourse.repo.common.StringFilterSpecification;
@@ -13,12 +13,15 @@ import java.util.List;
 
 public class BikeEntitySpecification {
     /**
-     * @param input the details of the filter to apply to the entities
-     * @return a specification based on the input, if the input is empty the specification will be
-     * equivalent to "match all"
-     * @throws NullPointerException if input is null
+     * Creates a criteria from a filter if specified, also forces fetch join on model and groupset
+     * embedded entities for non-count based queries. If no filter is specified, or it's empty,
+     * simply forces fetch join as previously described, will not apply any criteria to entities.
+     *
+     * @param input the details of the filter to apply to the entities, can be null
+     * @return a specification equivalent to the filter input if non-null and non-empty, "match all"
+     * otherwise. Forces fetch join for embedded entities regardless.
      */
-    public static Specification<BikeEntity> from(@NonNull BikesFilterInput input) {
+    public static Specification<BikeEntity> from(@Nullable final BikesFilterInput input) {
         return (root, query, cb) -> {
             // Force fetch join on all queries apart from the count query used by JPA for paging
             if (query.getResultType() != Long.class) {
@@ -26,7 +29,11 @@ public class BikeEntitySpecification {
                 root.fetch("groupset", JoinType.INNER);
             }
 
-            List<Predicate> predicates = new ArrayList<>();
+            if (input == null) {
+                return SpecificationUtils.alwaysTruePredicate(cb);
+            }
+
+            final List<Predicate> predicates = new ArrayList<>();
 
             // Bike entity predicate
             if (input.getSize() != null) {
